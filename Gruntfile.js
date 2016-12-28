@@ -50,76 +50,74 @@ module.exports = function(grunt) {
         copy: {
             main: {
                 files: [{
-                        expand: true,
-                        cwd: 'src/',
-                        dest: 'dest/',
-                        src: [
-                            'libs/**',
-                            'module/**',
-                            'AirUI/**',
-                            'b-UI/**'
-                        ]
-                    },
-                    {
-                        expand: true,
-                        cwd: 'src/',
-                        src: ["*.html", "*.txt"],
-                        dest: 'dest'
-                    }, {
-                        expand: true,
-                        cwd: 'src/',
-                        src: "app.js",
-                        dest: 'dest'
-                    }, {
-                        expand: true,
-                        cwd: 'src/template/',
-                        src: "*.html",
-                        dest: 'dest/template',
-                        filter: 'isFile'
-                    }, {
-                        expand: true,
-                        cwd: 'src/template/partials/',
-                        src: "*.html",
-                        dest: 'dest/template/partials',
-                        filter: 'isFile'
-                    }, {
-                        expand: true,
-                        cwd: 'src/webresource/css/',
-                        src: "*.css",
-                        dest: 'dest/webresource/css',
-                        filter: 'isFile'
-                    }, {
-                        expand: true,
-                        cwd: 'src/webresource/image/',
-                        src: "**/*",
-                        dest: 'dest/webresource/image',
-                        filter: 'isFile'
-                    }, {
-                        expand: true,
-                        cwd: 'src/pages/',
-                        src: "*.js",
-                        dest: 'dest/pages',
-                        filter: 'isFile'
-                    }, {
-                        expand: true,
-                        cwd: 'src/pages/partials/',
-                        src: "*.js",
-                        dest: 'dest/pages/partials',
-                        filter: 'isFile'
-                    }, {
-                        expand: true,
-                        cwd: 'src/service/',
-                        src: "*.js",
-                        dest: 'dest/service',
-                        filter: 'isFile'
-                    }, {
-                        expand: true,
-                        cwd: 'src/module/',
-                        src: "**/*",
-                        dest: 'dest/module',
-                        filter: 'isFile'
-                    }
-                ]
+                    expand: true,
+                    cwd: 'src/',
+                    dest: 'dest/',
+                    src: [
+                        'libs/**',
+                        'module/**',
+                        'AirUI/**',
+                        'b-UI/**'
+                    ]
+                }, {
+                    expand: true,
+                    cwd: 'src/',
+                    src: ["*.html", "*.txt"],
+                    dest: 'dest'
+                }, {
+                    expand: true,
+                    cwd: 'src/',
+                    src: "app.js",
+                    dest: 'dest'
+                }, {
+                    expand: true,
+                    cwd: 'src/template/',
+                    src: "*.html",
+                    dest: 'dest/template',
+                    filter: 'isFile'
+                }, {
+                    expand: true,
+                    cwd: 'src/template/partials/',
+                    src: "*.html",
+                    dest: 'dest/template/partials',
+                    filter: 'isFile'
+                }, {
+                    expand: true,
+                    cwd: 'src/webresource/css/',
+                    src: "*.css",
+                    dest: 'dest/webresource/css',
+                    filter: 'isFile'
+                }, {
+                    expand: true,
+                    cwd: 'src/webresource/image/',
+                    src: "**/*",
+                    dest: 'dest/webresource/image',
+                    filter: 'isFile'
+                }, {
+                    expand: true,
+                    cwd: 'src/pages/',
+                    src: "*.js",
+                    dest: 'dest/pages',
+                    filter: 'isFile'
+                }, {
+                    expand: true,
+                    cwd: 'src/pages/partials/',
+                    src: "*.js",
+                    dest: 'dest/pages/partials',
+                    filter: 'isFile'
+                }, {
+                    expand: true,
+                    cwd: 'src/service/',
+                    src: "*.js",
+                    dest: 'dest/service',
+                    filter: 'isFile'
+                }, {
+                    expand: true,
+                    cwd: 'src/module/',
+                    src: "**/*",
+                    dest: 'dest/module',
+                    filter: 'isFile'
+                }]
             },
             hybrid: {
                 files: [{
@@ -214,17 +212,27 @@ module.exports = function(grunt) {
         },
 
         htmlmin: {
-            mini: {
-                options: {
-                    removeComments: true,
-                    minifyJS: true,
-                    ignoreCustomFragments: [/{{.*?}}/, /<#include.*?>/]
-                },
+            options: {
+                collapseWhitespace: true,
+                conservativeCollapse: true,
+                removeComments: true,
+                minifyJS: true,
+                ignoreCustomFragments: [/{{.*?}}/, /<#include.*?>/]
+            },
+            dist: {
                 files: [{
                     expand: true,
                     cwd: 'dest',
                     src: '**/*.html',
                     dest: 'dest/'
+                }]
+            },
+            layouts: {
+                files: [{
+                    expand: true,
+                    cwd: 'dest/layouts/',
+                    src: '**/*.html',
+                    dest: 'dest/layouts/'
                 }]
             }
         },
@@ -235,7 +243,7 @@ module.exports = function(grunt) {
                     archive: '../<%= pkg.name %>.zip'
                 },
                 files: [
-                    {expand: true, cwd: '../', src: ['**', '!node_modules/**', '!mock/**', '!.*', '!*.zip', '!webapp/hybrid/**', '!gruntTask/**'], dest: ''}
+                    { expand: true, cwd: '../', src: ['**', '!node_modules/**', '!mock/**', '!.*', '!*.zip', '!webapp/hybrid/**', '!gruntTask/**'], dest: '' }
                 ]
             }
         }
@@ -249,7 +257,7 @@ module.exports = function(grunt) {
         }, ["./src/pages/*", '!./src/pages/partials']).forEach(function(dir) {
             dir = dir.match(/\/([^\/]+)$/)[1];
             console.log("*****************", dir)
-            // get the current concat config
+                // get the current concat config
             var concat = grunt.config.get('concat') || {};
             // set the config for this modulename-directory
             concat[dir] = {
@@ -321,21 +329,21 @@ module.exports = function(grunt) {
         // 拼接路由
         result += before + '\n var routerConfig = ' + JSON.stringify(routerObj, null, 4) + ';\n';
         result += 'for (var i = 0, len = routerConfig.rules.length, router; i < len; i++) {\n' +
-                    'router = routerConfig.rules[i];\n' +
-                    'router.rule = routerConfig.baseURL + router.rule;\n' +
-                    'b.router.set(router);\n' +
-                  '}\n';
+            'router = routerConfig.rules[i];\n' +
+            'router.rule = routerConfig.baseURL + router.rule;\n' +
+            'b.router.set(router);\n' +
+            '}\n';
 
         // 拼接service
         result += 'var serviceConfig = ' + service + ';\n';
         result += 'for (var i = 0, len = serviceConfig.config.length, config; i < len; i++) {\n' +
-                    'config = serviceConfig.config[i];\n' +
-                    'b.service.setConfig(config.name, config.param);\n' +
-                  '}\n' +
-                  'for (var i = 0, len = serviceConfig.services.length, service; i < len; i++) {\n' +
-                    'service = serviceConfig.services[i];\n' +
-                    'b.service.set(service.name, service.param);\n' +
-                  '}\n';
+            'config = serviceConfig.config[i];\n' +
+            'b.service.setConfig(config.name, config.param);\n' +
+            '}\n' +
+            'for (var i = 0, len = serviceConfig.services.length, service; i < len; i++) {\n' +
+            'service = serviceConfig.services[i];\n' +
+            'b.service.set(service.name, service.param);\n' +
+            '}\n';
 
         // 拼接app.js内容
         result += appContent + after;
@@ -555,9 +563,10 @@ module.exports = function(grunt) {
         "filerev:img", "replaceImage",
         "cssmin",
         "filerev:css", "replaceStyle",
+        "htmlmin:dist",
         "filerev:html", "createAppJS",
         "generateLayout",
-        "htmlmin",
+        "htmlmin:layouts",
         "copy:originSource", // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
         "clean:after"
     ];
