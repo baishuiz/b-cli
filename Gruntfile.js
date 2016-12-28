@@ -319,23 +319,23 @@ module.exports = function(grunt) {
         }
 
         // 拼接路由
-        result += before + '\r\n var routerConfig = ' + JSON.stringify(routerObj, null, 4) + ';\r\n';
-        result += 'for (var i = 0, len = routerConfig.rules.length, router; i < len; i++) {\r\n' +
-                    'router = routerConfig.rules[i];\r\n' +
-                    'router.rule = routerConfig.baseURL + router.rule;\r\n' +
-                    'b.router.set(router);\r\n' +
-                  '}\r\n';
+        result += before + '\n var routerConfig = ' + JSON.stringify(routerObj, null, 4) + ';\n';
+        result += 'for (var i = 0, len = routerConfig.rules.length, router; i < len; i++) {\n' +
+                    'router = routerConfig.rules[i];\n' +
+                    'router.rule = routerConfig.baseURL + router.rule;\n' +
+                    'b.router.set(router);\n' +
+                  '}\n';
 
         // 拼接service
-        result += 'var serviceConfig = ' + service + ';\r\n';
-        result += 'for (var i = 0, len = serviceConfig.config.length, config; i < len; i++) {\r\n' +
-                    'config = serviceConfig.config[i];\r\n' +
-                    'b.service.setConfig(config.name, config.param);\r\n' +
-                  '}\r\n' +
-                  'for (var i = 0, len = serviceConfig.services.length, service; i < len; i++) {\r\n' +
-                    'service = serviceConfig.services[i];\r\n' +
-                    'b.service.set(service.name, service.param);\r\n' +
-                  '}\r\n';
+        result += 'var serviceConfig = ' + service + ';\n';
+        result += 'for (var i = 0, len = serviceConfig.config.length, config; i < len; i++) {\n' +
+                    'config = serviceConfig.config[i];\n' +
+                    'b.service.setConfig(config.name, config.param);\n' +
+                  '}\n' +
+                  'for (var i = 0, len = serviceConfig.services.length, service; i < len; i++) {\n' +
+                    'service = serviceConfig.services[i];\n' +
+                    'b.service.set(service.name, service.param);\n' +
+                  '}\n';
 
         // 拼接app.js内容
         result += appContent + after;
