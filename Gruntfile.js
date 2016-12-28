@@ -555,6 +555,10 @@ module.exports = function(grunt) {
         grunt.file.write('dest/layouts/index-hybrid.html', hybridContent);
     });
 
+    // 在filerev前先将文件压缩（uglify, cssmin, htmlmin）以保证各操作系统下算出的签名一致
+    // TODO，Controller处理存在问题。
+    //     A requerequire B，当B改变，A不变时，B的sign变了
+    //     但是由于先进行了filerev:js，导致A的sign没变
     var buildWebTask = ['clean:before', 'copy:main',
         "uglify", "filerev:js",
         'concatController',
