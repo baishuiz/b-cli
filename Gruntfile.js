@@ -548,15 +548,16 @@ module.exports = function(grunt) {
     });
 
     var buildWebTask = ['clean:before', 'copy:main',
-        "uglify", "cssmin", "htmlmin", // htmlmin中的minifyCSS会有问题，所以cssmin先做
+        "uglify", "filerev:js",
         'concatController',
-        "filerev:js",
         'includePartial', 'concatTemplate', 'concatStyle',
         "replaceModule", "includController",
         "filerev:img", "replaceImage",
+        "cssmin",
         "filerev:css", "replaceStyle",
         "filerev:html", "createAppJS",
         "generateLayout",
+        "htmlmin",
         "copy:originSource", // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
         "clean:after"
     ];
