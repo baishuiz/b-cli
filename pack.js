@@ -1,4 +1,7 @@
 var childProcess = require('child_process');
+var path = require('path');
+var notifier = require('node-notifier');
+
 var args = process.argv.slice(2);
 
 var cmd = args[0];
@@ -14,8 +17,17 @@ childProcess.exec('grunt ' + cmd + ' --project=' + project, {
 }, function(error) {
     if (error !== null) {
         console.log('exec error: ' + error);
+        notify('Pack Failed: ' + JSON.stringify(error));
         process.exit(1);
     } else {
-        console.log('pack done');
+        notify('Pack Success');
     }
 });
+
+function notify(msg) {
+    notifier.notify({
+        title: 'Pack',
+        icon: path.join(__dirname, 'resource/cjia.png'),
+        message: msg
+    });
+}

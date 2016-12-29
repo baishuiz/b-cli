@@ -17,5 +17,8 @@
     "grunt-filerev-assets": "^1.0.0",
     "grunt-includes": "^1.0.0",
     "jsonminify": "^0.4.1"
+  },
+  "devDependencies": {
+    "node-notifier": "^4.6.1"
   }
 }

@@ -23,7 +23,6 @@ module.exports = function(grunt) {
     if (!grunt.file.exists(basePath)) {
         throw new Error('no project folder: ' + project);
     }
-    console.log(basePath);
     grunt.file.setBase(basePath);
 
     var revExtend = '_';
@@ -34,6 +33,10 @@ module.exports = function(grunt) {
             summary[key.replace(/\\/g, '/')] = summaryOrigin[key].replace(/\\/g, '/');
         }
         return summary;
+    };
+
+    var getCommonModule = function() {
+        return grunt.config('commonModule') || {};
     };
 
     var hybridConfigPath = '../config.hybrid.json';
@@ -56,7 +59,6 @@ module.exports = function(grunt) {
                     src: [
                         'libs/**',
                         'module/**',
-                        'AirUI/**',
                         'b-UI/**'
                     ]
                 }, {
@@ -151,7 +153,7 @@ module.exports = function(grunt) {
                 src: 'dest/template/**/*.html'
             },
             js: {
-                src: ['dest/AirUI/**/*.js', 'dest/b-UI/**/*.js', 'dest/pages/**/*.js', 'dest/libs/**/*.js', 'dest/service/**/*.js', 'dest/module/**/*.js']
+                src: ['dest/b-UI/**/*.js', 'dest/pages/**/*.js', 'dest/libs/**/*.js', 'dest/service/**/*.js', 'dest/module/**/*.js']
             },
             css: {
                 src: 'dest/webresource/css/*.css'
@@ -383,15 +385,26 @@ module.exports = function(grunt) {
 
     grunt.registerTask('replaceModule', 'replaceModule', function() {
         var summary = replacedSummary();
-        var replace = function(str, curName) {
+        var commonModule = getCommonModule();
+        var replace = function(str, paramStr, curName) {
             var name = curName || '';
-            name = name.replace(/\./g, '/');
-            name = 'dest/' + name + '.js';
-            name = summary[name];
+            var commonModulePath = commonModule[name];
+
+            if (commonModulePath) {
+                name = '"' + curName + '", "' + commonModulePath + '"';
+            } else {
+                name = name.replace(/\./g, '/');
+                name = 'dest/' + name + '.js';
+                name = summary[name];
+
+                if (name) {
+                    name = name.replace(/^dest\//, '').replace(/\.js$/, '').replace(/\//g, '.');
+                    name = '"' + name + '"';
+                }
+            }
 
             if (name) {
-                name = name.replace(/^dest\//, '').replace(/\.js$/, '').replace(/\//g, '.');
-                return str.replace(curName, name);
+                return str.replace(paramStr, name);
             } else {
                 return str;
             }
@@ -399,22 +412,22 @@ module.exports = function(grunt) {
 
         grunt.file.expand({
             filter: "isFile"
-        }, ["./dest/AirUI/**/*", "./dest/b-UI/**/*", "./dest/service/*", "./dest/module/**/*"]).forEach(function(dir) {
+        }, ["./dest/b-UI/**/*", "./dest/service/*", "./dest/module/**/*"]).forEach(function(dir) {
             var exists = grunt.file.exists(dir);
             if (exists) {
                 var content = grunt.file.read(dir);
-                content = content.replace(/Module\(['"]\s*([^'"]+)\s*['"],/ig, replace);
+                content = content.replace(/Module\((['"]\s*([^'"]+)\s*['"]),/ig, replace);
                 grunt.file.write(dir, content);
             }
         });
 
         grunt.file.expand({
             filter: "isFile"
-        }, ["./dest/AirUI/**/*", "./dest/b-UI/**/*", "./dest/module/**/*", "./dest/pages/*", "./dest/pages/partials/*", "./dest/app.js"]).forEach(function(dir) {
+        }, ["./dest/b-UI/**/*", "./dest/module/**/*", "./dest/pages/*", "./dest/pages/partials/*", "./dest/app.js"]).forEach(function(dir) {
             var exists = grunt.file.exists(dir);
             if (exists) {
                 var content = grunt.file.read(dir);
-                content = content.replace(/require\(['"]\s*([^'"]+)\s*['"]\)/ig, replace);
+                content = content.replace(/require\((['"]\s*([^'"]+)\s*['"])\)/ig, replace);
                 grunt.file.write(dir, content);
             }
         });
@@ -560,31 +573,33 @@ module.exports = function(grunt) {
     //     A requerequire B，当B改变，A不变时，B的sign变了
     //     但是由于先进行了filerev:js，导致A的sign没变
     var buildWebTask = ['clean:before', 'copy:main',
-        "uglify", "filerev:js",
+        'getCommonModuleConfig',
+        'uglify', 'filerev:js',
         'concatController',
         'includePartial', 'concatTemplate', 'concatStyle',
-        "replaceModule", "includController",
-        "filerev:img", "replaceImage",
-        "cssmin",
-        "filerev:css", "replaceStyle",
-        "htmlmin:dist",
-        "filerev:html", "createAppJS",
-        "generateLayout",
-        "htmlmin:layouts",
-        "copy:originSource", // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
-        "clean:after"
+        'replaceModule', 'includController',
+        'filerev:img', 'replaceImage',
+        'cssmin',
+        'filerev:css', 'replaceStyle',
+        'htmlmin:dist',
+        'filerev:html', 'createAppJS',
+        'generateLayout',
+        'htmlmin:layouts',
+        'copy:originSource', // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
+        'clean:after'
     ];
     var buildWebDebugTask = ['clean:before', 'copy:main',
+        'getCommonModuleConfig',
         'concatController',
-        "filerev:js",
+        'filerev:js',
         'includePartial', 'concatTemplate', 'concatStyle',
-        "replaceModule", "includController",
-        "filerev:img", "replaceImage",
-        "filerev:css", "replaceStyle",
-        "filerev:html", "createAppJS",
-        "generateLayout",
-        "copy:originSource", // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
-        "clean:after"
+        'replaceModule', 'includController',
+        'filerev:img', 'replaceImage',
+        'filerev:css', 'replaceStyle',
+        'filerev:html', 'createAppJS',
+        'generateLayout',
+        'copy:originSource', // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
+        'clean:after'
     ];
     var buildHybridTask = buildWebTask.concat([
         'clean:hybrid', 'copy:hybrid',
