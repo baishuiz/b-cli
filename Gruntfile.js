@@ -13,6 +13,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadTasks('./gruntTask');
 
+    var packPkg = grunt.file.readJSON('./package.json');
+
 
     var project = grunt.option('project');
     if (!project) {
@@ -41,7 +43,8 @@ module.exports = function(grunt) {
 
     var hybridConfigPath = '../config.hybrid.json';
     grunt.initConfig({
-        pkg: grunt.file.readJSON('../package.json'),
+        packPkg: packPkg, // 打包模块的 pkg
+        pkg: grunt.file.readJSON('../package.json'), // 项目的 pkg
         router: grunt.file.read('src/router.json'),
         service: grunt.file.read('src/service.json'),
         hybridConfig: grunt.file.exists(hybridConfigPath) ? grunt.file.readJSON(hybridConfigPath) : {},

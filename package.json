@@ -20,5 +20,8 @@
   },
   "devDependencies": {
     "node-notifier": "^4.6.1"
+  },
+  "custom": {
+    "commonModulePath": "https://image.cjia.com/fe/config.json"
   }
 }

@@ -1,9 +1,11 @@
 var https = require('https');
 
-var commonModulePath = 'https://image.cjia.com/common/module/config.json';
-
 module.exports = function(grunt) {
+
+
     grunt.registerTask('getCommonModuleConfig', 'replace common module from static-resource folder', function() {
+        var commonModulePath = grunt.config('packPkg').custom.commonModulePath;
+
         var done = this.async();
         var out = '';
         var req = https.get(commonModulePath, function(res) {
