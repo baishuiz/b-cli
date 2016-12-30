@@ -261,7 +261,6 @@ module.exports = function(grunt) {
             filter: "isDirectory"
         }, ["./src/pages/*", '!./src/pages/partials']).forEach(function(dir) {
             dir = dir.match(/\/([^\/]+)$/)[1];
-            console.log("*****************", dir)
                 // get the current concat config
             var concat = grunt.config.get('concat') || {};
             // set the config for this modulename-directory
@@ -389,6 +388,7 @@ module.exports = function(grunt) {
     grunt.registerTask('replaceModule', 'replaceModule', function() {
         var summary = replacedSummary();
         var commonModule = getCommonModule();
+        commonModule = (commonModule || {}).module || {};
         var replace = function(str, paramStr, curName) {
             var name = curName || '';
             var commonModulePath = commonModule[name];
@@ -541,22 +541,35 @@ module.exports = function(grunt) {
         var hybridContent = replacedContent('hybrid', indexContent);
 
         function replacedContent(type, indexContent) {
+            var bMap = getCommonModule();
+            bMap = bMap && bMap.b || {}
+            bMap = bMap[type] || {};
+
             var matchedScript = indexContent.match(/(<script[^>]+=["'])(\S+.js)(["'][^>]*>)/g);
             matchedScript && matchedScript.forEach(function(scriptTag) {
                 var path = scriptTag.match(/(<script[^>]+=["'])(\S+.js)(["'][^>]*>)/) || [];
                 path = path[2] && path[2].replace(/{{\S+}}/, '') || '';
                 if (path) {
-                    var destPath = 'dest/';
+                    var destPath;
+                    var matchedPath = path.match(/b\.(\d\.\d)\.js/);
+                    var version = matchedPath && matchedPath[1];
 
-                    if (path.match(/b(\.\d){3}\.js/)) {
-                        destPath += 'libs/' + type + '/';
+                    if (version) {
+                        var url = bMap[version];
+                        if (!url) {
+                            throw new Error('no version found, ' + version);
+                        }
+                        destPath = url;
+                    } else {
+                        if (!path.match(/^(http|\/\/)/)) {
+                            destPath = 'dest/';
+                            destPath += path;
+                            destPath = summary[destPath];
+                            destPath = destPath.replace('dest/', '');
+                        }
                     }
 
-                    destPath += path;
-                    destPath = summary[destPath];
-
                     if (destPath) {
-                        destPath = destPath.replace('dest/', '');
                         var destScriptTag = scriptTag.replace(path, destPath);
                         indexContent = indexContent.replace(scriptTag, destScriptTag);
                     }
