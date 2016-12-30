@@ -4,7 +4,7 @@ module.exports = function(grunt) {
 
 
     grunt.registerTask('getCommonModuleConfig', 'replace common module from static-resource folder', function() {
-        var commonModulePath = grunt.config('packPkg').custom.commonModulePath;
+        var commonModulePath = grunt.config('packPkg').custom.commonModulePath + '?' + new Date().getTime();
 
         var done = this.async();
         var out = '';
