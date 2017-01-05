@@ -1,4 +1,6 @@
 var jsonminify = require('jsonminify');
+var path = require('path');
+
 module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -14,7 +16,7 @@ module.exports = function(grunt) {
     grunt.loadTasks('./gruntTask');
 
     var packPkg = grunt.file.readJSON('./package.json');
-
+    packPkg.custom.commonModulePathLocal = path.resolve(packPkg.custom.commonModulePathLocal);
 
     var project = grunt.option('project');
     if (!project) {
@@ -584,12 +586,13 @@ module.exports = function(grunt) {
         grunt.file.write('dest/layouts/index-hybrid.html', hybridContent);
     });
 
+    var buildBefore = ['clean:before', 'copy:main'];
+
     // 在filerev前先将文件压缩（uglify, cssmin, htmlmin）以保证各操作系统下算出的签名一致
     // TODO，Controller处理存在问题。
     //     A requerequire B，当B改变，A不变时，B的sign变了
     //     但是由于先进行了filerev:js，导致A的sign没变
-    var buildWebTask = ['clean:before', 'copy:main',
-        'getCommonModuleConfig',
+    var buildWebTask = [
         'uglify', 'filerev:js',
         'concatController',
         'includePartial', 'concatTemplate', 'concatStyle',
@@ -604,8 +607,7 @@ module.exports = function(grunt) {
         'copy:originSource', // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
         'clean:after'
     ];
-    var buildWebDebugTask = ['clean:before', 'copy:main',
-        'getCommonModuleConfig',
+    var buildWebDebugTask = [
         'concatController',
         'filerev:js',
         'includePartial', 'concatTemplate', 'concatStyle',
@@ -617,24 +619,30 @@ module.exports = function(grunt) {
         'copy:originSource', // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
         'clean:after'
     ];
-    var buildHybridTask = buildWebTask.concat([
+
+    // 运行时，使用本地公用模块
+    var run = buildBefore.concat(['getCommonModuleConfigLocal']).concat(buildWebTask);
+    var runDebug = buildBefore.concat(['getCommonModuleConfigLocal']).concat(buildWebDebugTask);
+
+    //  打包时，使用远程公用模块
+    var build = buildBefore.concat(['getCommonModuleConfig']).concat(buildWebTask).concat(['compress:zipweb']);
+    var buildDebug = buildBefore.concat(['getCommonModuleConfig']).concat(buildWebDebugTask).concat(['compress:zipweb']);
+
+    var hybrid = build.concat([
         'clean:hybrid', 'copy:hybrid',
         'buildHybrid'
     ]);
-    var buildHybridDebugTask = buildWebDebugTask.concat([
+    var hybridDebug = buildDebug.concat([
         'clean:hybrid', 'copy:hybrid',
         'buildHybrid'
     ]);
 
+    grunt.registerTask('run', run);
+    grunt.registerTask('debug', runDebug);
 
-    grunt.registerTask('run', buildWebTask);
+    grunt.registerTask('build', build);
+    grunt.registerTask('build-debug', buildDebug);
 
-    grunt.registerTask('debug', buildWebDebugTask);
-
-    grunt.registerTask('build', buildWebTask.concat(['compress:zipweb']));
-    grunt.registerTask('build-debug', buildWebDebugTask.concat(['compress:zipweb']));
-
-    grunt.registerTask('hybrid', buildHybridTask);
-
-    grunt.registerTask('hybrid-debug', buildHybridDebugTask);
+    grunt.registerTask('hybrid', hybrid);
+    grunt.registerTask('hybrid-debug', hybridDebug);
 };

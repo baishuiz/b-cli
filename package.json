@@ -1,7 +1,7 @@
 {
-  "name": "pack",
+  "name": "bpack",
   "version": "1.0.0",
-  "description": "cjia pack tool",
+  "description": "pack tool for b.js",
   "main": "pack.js",
   "author": "cjia",
   "dependencies": {
@@ -22,6 +22,7 @@
     "node-notifier": "^4.6.1"
   },
   "custom": {
-    "commonModulePath": "https://image.cjia.com/fe/config.json"
+    "commonModulePath": "https://image.cjia.com/fe/config.json",
+    "commonModulePathLocal": "../static-resource/dist/fe/config.json"
   }
 }
