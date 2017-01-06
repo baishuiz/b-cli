@@ -25,12 +25,12 @@ module.exports = function(grunt) {
                     }
                 });
             } else {
-                throw new Error('can not get common module config');
+                throw new Error('can not get common module config: ' + commonModulePath);
             }
         });
 
         req.on('error', (e) => {
-            throw new Error('can not get common module config')
+            throw new Error('can not get common module config: ' + commonModulePath)
         });
 
         req.end();

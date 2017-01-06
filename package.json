@@ -21,7 +21,7 @@
     "node-notifier": "^4.6.1"
   },
   "bin": {
-    "cpack": "pack.js"
+    "cpack": "./pack.js"
   },
   "custom": {
     "commonModulePath": "https://image.cjia.com/fe/config.json",
