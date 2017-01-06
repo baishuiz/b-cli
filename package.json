@@ -1,9 +1,10 @@
 {
-  "name": "bpack",
-  "version": "1.0.0",
-  "description": "pack tool for b.js",
+  "name": "cpack",
+  "version": "1.0.8",
+  "description": "cjia pack tool",
   "main": "pack.js",
   "author": "cjia",
+  "license": "",
   "dependencies": {
     "grunt": "^1.0.1",
     "grunt-contrib-clean": "^1.0.0",
@@ -16,10 +17,11 @@
     "grunt-filerev": "^2.3.1",
     "grunt-filerev-assets": "^1.0.0",
     "grunt-includes": "^1.0.0",
-    "jsonminify": "^0.4.1"
-  },
-  "devDependencies": {
+    "jsonminify": "^0.4.1",
     "node-notifier": "^4.6.1"
+  },
+  "bin": {
+    "cpack": "pack.js"
   },
   "custom": {
     "commonModulePath": "https://image.cjia.com/fe/config.json",

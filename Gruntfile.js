@@ -16,16 +16,18 @@ module.exports = function(grunt) {
     grunt.loadTasks('./gruntTask');
 
     var packPkg = grunt.file.readJSON('./package.json');
-    packPkg.custom.commonModulePathLocal = path.resolve(packPkg.custom.commonModulePathLocal);
 
-    var project = grunt.option('project');
-    if (!project) {
+    var projectPath = grunt.option('project');
+    if (!projectPath) {
         throw new Error('project empty');
     }
 
-    var basePath = '../' + project + '/webapp';
+    packPkg.custom.commonModulePathLocal = path.resolve(projectPath + '/' + packPkg.custom.commonModulePathLocal);
+    console.log(packPkg.custom.commonModulePathLocal);
+
+    var basePath = projectPath + '/webapp';
     if (!grunt.file.exists(basePath)) {
-        throw new Error('no project folder: ' + project);
+        throw new Error('no project folder: ' + projectPath);
     }
     grunt.file.setBase(basePath);
 
@@ -637,7 +639,7 @@ module.exports = function(grunt) {
         'buildHybrid'
     ]);
 
-    grunt.registerTask('run', run);
+    grunt.registerTask('default', run);
     grunt.registerTask('debug', runDebug);
 
     grunt.registerTask('build', build);

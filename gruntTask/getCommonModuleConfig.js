@@ -44,19 +44,6 @@ module.exports = function(grunt) {
         }
 
         var config = grunt.file.readJSON(commonModulePathLocal);
-
-        // var replace = function(obj){
-        //     for (var k in obj) {
-        //         var val = obj[k];
-        //         if (typeof val === 'string') {
-        //             obj[k] = val.replace(/^https:\/\/image.cjia.com/, '/{{commonModule}}');
-        //         } else if (typeof val === 'object') {
-        //             replace(val);
-        //         }
-        //     }
-        // }
-        // replace(config);
-        console.log(config);
         grunt.config('commonModule', config);
     });
 }

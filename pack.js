@@ -1,26 +1,34 @@
+#!/usr/bin/env node
+
 var childProcess = require('child_process');
 var path = require('path');
 var notifier = require('node-notifier');
+var pkg = require('./package.json');
 
 var args = process.argv.slice(2);
 
-var cmd = args[0];
-var project = args[1]
-console.log('pack', cmd, project);
+var cmd = args[0] || 'default';
+var project = process.cwd();
 
-if (!cmd || !project) {
-    throw new Error('cmd error' + JSON.stringify(args));
+// TODO 命令，help
+if (cmd === '-v' || cmd === '--version' || cmd === '--versions') {
+    console.log(pkg.version);
+    process.exit(1);
+} else if (!['', 'default', 'debug', 'build', 'build-debug', 'hybrid', 'hybrid-debug'].includes(cmd)) {
+    console.error('command "' + cmd +  '" not found');
+    process.exit(1);
 }
 
 childProcess.exec('grunt ' + cmd + ' --project=' + project, {
-    cwd: '../pack/'
-}, function(error) {
+    cwd: __dirname
+}, function(error, stdout, stderr) {
     if (error !== null) {
-        console.log('exec error: ' + error);
-        notify('Pack Failed: ' + JSON.stringify(error));
+        console.error('exec error: ' + error);
+        console.error(stdout);
+        notify(project + ': Pack Failed: ' + JSON.stringify(error));
         process.exit(1);
     } else {
-        notify('Pack Success');
+        notify(project + ': Pack Success');
     }
 });
 
