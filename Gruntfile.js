@@ -46,6 +46,20 @@ module.exports = function(grunt) {
     };
 
     var hybridConfigPath = '../config.hybrid.json';
+    var filerevConfigOptions = {
+        algorithm: 'md5',
+        length: 8,
+        process: function(basename, name, extension) {
+            return basename + revExtend + name + '.' + extension;
+        }
+    };
+    var filerevConfigHybridOptions = {
+        algorithm: 'md5',
+        length: 8,
+        process: function(basename, name, extension) {
+            return basename + '.' + extension;
+        }
+    };
     grunt.initConfig({
         packPkg: packPkg, // 打包模块的 pkg
         pkg: grunt.file.readJSON('../package.json'), // 项目的 pkg
@@ -55,6 +69,41 @@ module.exports = function(grunt) {
         output: {
             fileName: '<%= pkg.name %>.<%= pkg.version %>.js',
             minFileName: '<%= pkg.name %>.<%= pkg.version %>.js'
+        },
+
+        filerev: {
+            html: {
+                options: filerevConfigOptions,
+                src: 'dest/template/**/*.html'
+            },
+            'html-hybrid': {
+                options: filerevConfigHybridOptions,
+                src: 'dest/template/**/*.html'
+            },
+            js: {
+                options: filerevConfigOptions,
+                src: ['dest/b-UI/**/*.js', 'dest/pages/**/*.js', 'dest/libs/**/*.js', 'dest/service/**/*.js', 'dest/module/**/*.js']
+            },
+            'js-hybrid': {
+                options: filerevConfigHybridOptions,
+                src: ['dest/b-UI/**/*.js', 'dest/pages/**/*.js', 'dest/libs/**/*.js', 'dest/service/**/*.js', 'dest/module/**/*.js']
+            },
+            css: {
+                options: filerevConfigOptions,
+                src: 'dest/webresource/css/*.css'
+            },
+            'css-hybrid': {
+                options: filerevConfigHybridOptions,
+                src: 'dest/webresource/css/*.css'
+            },
+            img: {
+                options: filerevConfigOptions,
+                src: 'dest/webresource/image/**/*'
+            },
+            'img-hybrid': {
+                options: filerevConfigHybridOptions,
+                src: 'dest/webresource/image/**/*'
+            }
         },
 
         copy: {
@@ -128,15 +177,6 @@ module.exports = function(grunt) {
                     filter: 'isFile'
                 }]
             },
-            hybrid: {
-                files: [{
-                    expand: true,
-                    cwd: 'dest/',
-                    src: '**/*',
-                    dest: 'hybrid/',
-                    filter: 'isFile'
-                }]
-            },
             originSource: {
                 files: [{
                     expand: true,
@@ -145,28 +185,6 @@ module.exports = function(grunt) {
                     dest: 'dest/webresource/',
                     filter: 'isFile'
                 }]
-            }
-        },
-
-        filerev: {
-            options: {
-                algorithm: 'md5',
-                length: 8,
-                process: function(basename, name, extension) {
-                    return basename + revExtend + name + '.' + extension;
-                }
-            },
-            html: {
-                src: 'dest/template/**/*.html'
-            },
-            js: {
-                src: ['dest/b-UI/**/*.js', 'dest/pages/**/*.js', 'dest/libs/**/*.js', 'dest/service/**/*.js', 'dest/module/**/*.js']
-            },
-            css: {
-                src: 'dest/webresource/css/*.css'
-            },
-            img: {
-                src: 'dest/webresource/image/**/*'
             }
         },
 
@@ -182,9 +200,8 @@ module.exports = function(grunt) {
         },
 
         clean: {
-            before: ["dest/"],
-            after: ["dest/app.js", "dest/index.html"],
-            hybrid: ["hybrid/"]
+            dest: ["dest/"],
+            after: ["dest/app.js", "dest/index.html"]
         },
 
         uglify: {
@@ -252,7 +269,7 @@ module.exports = function(grunt) {
                     archive: '../<%= pkg.name %>.zip'
                 },
                 files: [
-                    { expand: true, cwd: '../', src: ['**', '!node_modules/**', '!mock/**', '!.*', '!*.zip', '!webapp/hybrid/**', '!gruntTask/**'], dest: '' }
+                    { expand: true, cwd: '../', src: ['**', '!node_modules/**', '!mock/**', '!.*', '!*.zip', '!gruntTask/**'], dest: '' }
                 ]
             }
         }
@@ -265,7 +282,7 @@ module.exports = function(grunt) {
             filter: "isDirectory"
         }, ["./src/pages/*", '!./src/pages/partials']).forEach(function(dir) {
             dir = dir.match(/\/([^\/]+)$/)[1];
-                // get the current concat config
+            // get the current concat config
             var concat = grunt.config.get('concat') || {};
             // set the config for this modulename-directory
             concat[dir] = {
@@ -324,6 +341,9 @@ module.exports = function(grunt) {
         for (var key in summary) {
             var view = key.match(/([^\/]+)\..+$/)[1];
             var hash = summary[key].match(/([^\/._]+)\.[^.]+$/)[1];
+            if (hash === view) {
+                hash = '';
+            }
             map[view] = hash;
         }
 
@@ -365,8 +385,6 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('includController', 'includController', function() {
-        //a.match(/([^\\]+)\..+$/)
-        // var map  = {};
         var result = "";
 
         var summary = replacedSummary()
@@ -374,10 +392,12 @@ module.exports = function(grunt) {
         for (var key in summary) {
             var view = key.match(/([^\/]+)\..+$/)[1]
             var hash = summary[key].match(/([^\/._]+)\.[^.]+$/)[1];
-            // map[view] = hash;
+            if (hash === view) {
+                hash = '';
+            }
 
             grunt.file.defaultEncoding = 'utf8';
-            var filePath = "pages/" + view + revExtend + hash + ".js";
+            var filePath = "pages/" + view + (hash ? (revExtend + hash) : "") + ".js";
             var viewPath = "dest/template/" + view + ".html";
             if (grunt.file.exists(viewPath)) {
                 var viewContent = grunt.file.read(viewPath);
@@ -458,7 +478,8 @@ module.exports = function(grunt) {
                                 filter: "isFile"
                             }, "./dest/webresource/css/*.css").forEach(function(cssDir) {
                                 var destCssName = cssDir.match(/\/([^\/]+)$/)[1];
-                                if (destCssName.match(new RegExp('^' + cssName + revExtend + '\\S+\\.css'))) {
+                                var reg = new RegExp('^' + cssName + '(' +revExtend + '\\S+)?\\.css')
+                                if (destCssName.match(reg)) {
                                     stylePath = stylePath.replace(cssName + '.css', destCssName);
                                     stylePath = stylePath.replace(/{{.*?}}/ig, '');
                                     stylePath = './dest/' + stylePath;
@@ -560,10 +581,7 @@ module.exports = function(grunt) {
 
                     if (version) {
                         var url = bMap[version];
-                        if (!url) {
-                            throw new Error('no version found, ' + version);
-                        }
-                        destPath = url;
+                        destPath = url || destPath;
                     } else {
                         if (!path.match(/^(http|\/\/)/)) {
                             destPath = 'dest/';
@@ -588,7 +606,7 @@ module.exports = function(grunt) {
         grunt.file.write('dest/layouts/index-hybrid.html', hybridContent);
     });
 
-    var buildBefore = ['clean:before', 'copy:main'];
+    var buildBefore = ['clean:dest', 'copy:main'];
 
     // 在filerev前先将文件压缩（uglify, cssmin, htmlmin）以保证各操作系统下算出的签名一致
     // TODO，Controller处理存在问题。
@@ -630,13 +648,42 @@ module.exports = function(grunt) {
     var build = buildBefore.concat(['getCommonModuleConfig']).concat(buildWebTask).concat(['compress:zipweb']);
     var buildDebug = buildBefore.concat(['getCommonModuleConfig']).concat(buildWebDebugTask).concat(['compress:zipweb']);
 
-    var hybrid = build.concat([
-        'clean:hybrid', 'copy:hybrid',
-        'buildHybrid'
+
+    var buildHybrdTask = [
+        'uglify', 'filerev:js-hybrid',
+        'concatController',
+        'includePartial', 'concatTemplate', 'concatStyle',
+        'replaceModule', 'includController',
+        'filerev:img-hybrid', 'replaceImage',
+        'cssmin',
+        'filerev:css-hybrid', 'replaceStyle',
+        'htmlmin:dist',
+        'filerev:html-hybrid', 'createAppJS',
+        'generateLayout',
+        'htmlmin:layouts',
+        'copy:originSource', // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
+        'clean:after'
+    ];
+    var buildHybrdDebugTask = [
+        'concatController',
+        'filerev:js-hybrid',
+        'includePartial', 'concatTemplate', 'concatStyle',
+        'replaceModule', 'includController',
+        'filerev:img-hybrid', 'replaceImage',
+        'filerev:css-hybrid', 'replaceStyle',
+        'filerev:html-hybrid', 'createAppJS',
+        'generateLayout',
+        'copy:originSource', // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
+        'clean:after'
+    ];
+
+    var hybrid = buildBefore.concat(['getCommonModuleConfigHybrid']).concat(buildHybrdTask).concat([
+        'buildHybrid',
+        'clean:dest'
     ]);
-    var hybridDebug = buildDebug.concat([
-        'clean:hybrid', 'copy:hybrid',
-        'buildHybrid'
+    var hybridDebug = buildBefore.concat(['getCommonModuleConfigHybrid']).concat(buildHybrdDebugTask).concat([
+        'buildHybrid',
+        'clean:dest'
     ]);
 
     grunt.registerTask('default', run);

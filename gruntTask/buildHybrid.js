@@ -1,7 +1,6 @@
-var grunt;
 var configPath = '../config.hybrid.json';
 var PREFIX = 'hybrid-tmp-';
-var layoutPath = './hybrid/layouts/index-hybrid.html';
+var layoutPath = './dest/layouts/index-hybrid.html';
 
 function getStaticConfig(config) {
   var staticConfig = '<script>var staticConfig=' + JSON.stringify(config) + ';</script>';
@@ -12,6 +11,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('buildHybrid-layout', function(){
     var configs = grunt.config('hybridConfig');
+    var commonModule = grunt.config('commonModule') || {};
+
     for (var key in configs) {
       var config = configs[key];
       var staticConfig = getStaticConfig(config);
@@ -20,11 +21,9 @@ module.exports = function(grunt) {
       layout = layout.replace(/{{staticConfig}}/g, staticConfig);
       layout = layout.replace(/{{\$resourceURL}}/g, config.resourceURL || '');
 
-      var libMatchedAry = layout.match(/(<script[^>]+=["'])(\S+.js)(["'][^>]*>)/) || [];
-      var curLibPath = libMatchedAry && libMatchedAry[2];
-      if (curLibPath) {
-        layout = layout.replace(new RegExp(curLibPath, 'g'), '../libs/b.min.js');
-      }
+      layout = layout.replace(/(<script[^>]+=["'])(b\.(\d\.\d)\.js)(["'][^>]*>)/, function(str, $1, path, version){
+        return '<script src="../lib/b.js"></script>';
+      })
 
       grunt.file.write('./' + PREFIX + key + '/index.html', layout);
     }
@@ -60,7 +59,7 @@ module.exports = function(grunt) {
       copyConfig[prefixedKey] = {
         files: [{
             expand: true,
-            cwd: 'hybrid/',
+            cwd: 'dest/',
             src: '**/*',
             dest: prefixedKey + '/',
             filter: 'isFile'
