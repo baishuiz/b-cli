@@ -1,6 +1,6 @@
 {
   "name": "cpack",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "cjia pack tool",
   "main": "pack.js",
   "author": "cjia",

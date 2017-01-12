@@ -47,7 +47,7 @@ module.exports = function(grunt) {
 
       compressConfig[prefixedKey] = {
         options: {
-          archive: '../<%= pkg.name %>-' + key + '.zip'
+          archive: '../<%= pkg.channel %>-' + key + '.zip'
         },
         files: [
           {expand: true, cwd: prefixedKey + '/', src: ['**'], dest: ''}
