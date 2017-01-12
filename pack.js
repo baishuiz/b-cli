@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-
 var childProcess = require('child_process');
 var path = require('path');
 var notifier = require('node-notifier');
