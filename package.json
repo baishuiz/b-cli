@@ -23,7 +23,12 @@
   "bin": {
     "cpack": "./pack.js"
   },
-  "custom": {
+  "CJfed": {
+    "commonModulePath": "https://image.cjia.com/CJfed/config.json",
+    "commonModulePathHybrid": "https://image.cjia.com/CJfed/config.hybrid.json",
+    "commonModulePathLocal": "../static-resource/dist/CJfed/config.json"
+  },
+  "fe": {
     "commonModulePath": "https://image.cjia.com/fe/config.json",
     "commonModulePathHybrid": "https://image.cjia.com/fe/config.hybrid.json",
     "commonModulePathLocal": "../static-resource/dist/fe/config.json"

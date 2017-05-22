@@ -22,7 +22,15 @@ module.exports = function(grunt) {
         throw new Error('project empty');
     }
 
-    packPkg.custom.commonModulePathLocal = path.resolve(projectPath + '/' + packPkg.custom.commonModulePathLocal);
+    var optionOfStaticDir = grunt.option('optionOfStaticDir');
+
+    optionOfStaticDir = optionOfStaticDir || 'fe';
+
+    packPkg.custom = {};
+    packPkg.custom.commonModulePathLocal = path.resolve(projectPath + '/' + packPkg[optionOfStaticDir].commonModulePathLocal);
+    packPkg.custom.commonModulePath = packPkg[optionOfStaticDir].commonModulePath;
+    packPkg.custom.commonModulePathHybrid = packPkg[optionOfStaticDir].commonModulePathHybrid;
+
     console.log(packPkg.custom.commonModulePathLocal);
 
     var basePath = projectPath + '/webapp';
