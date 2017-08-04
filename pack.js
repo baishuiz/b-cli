@@ -19,7 +19,7 @@ if (cmd === '-v' || cmd === '--version' || cmd === '--versions') {
     process.exit(1);
 }
 
-childProcess.exec('grunt ' + cmd + ' --project=' + project + ' --optionOfStaticDir=' + (args[1] || ''), {
+childProcess.exec('grunt ' + cmd + ' --project=' + project + ' --domain=' + (args[1] || '') + ' --optionOfStaticDir=' + (args[2] || ''), {
     cwd: __dirname
 }, function(error, stdout, stderr) {
     if (error !== null) {

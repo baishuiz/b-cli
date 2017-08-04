@@ -1,6 +1,6 @@
 {
   "name": "cpack",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "cjia pack tool",
   "main": "pack.js",
   "author": "cjia",
@@ -23,14 +23,20 @@
   "bin": {
     "cpack": "./pack.js"
   },
+  "env": {
+    "local": "../static-resource/dist/",
+    "fat": "https://fat-oss.oss-cn-hangzhou.aliyuncs.com/",
+    "pre": "https://image.cjbnb.com/",
+    "prd": "https://image.cjia.com/"
+  },
   "CJfed": {
-    "commonModulePath": "https://image.cjia.com/CJfed/config.json",
-    "commonModulePathHybrid": "https://image.cjia.com/CJfed/config.hybrid.json",
+    "commonModulePath": "CJfed/config.json",
+    "commonModulePathHybrid": "CJfed/config.hybrid.json",
     "commonModulePathLocal": "../static-resource/dist/CJfed/config.json"
   },
   "fe": {
-    "commonModulePath": "https://image.cjia.com/fe/config.json",
-    "commonModulePathHybrid": "https://image.cjia.com/fe/config.hybrid.json",
+    "commonModulePath": "fe/config.json",
+    "commonModulePathHybrid": "fe/config.hybrid.json",
     "commonModulePathLocal": "../static-resource/dist/fe/config.json"
   }
 }

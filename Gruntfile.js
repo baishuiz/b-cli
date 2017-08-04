@@ -23,13 +23,15 @@ module.exports = function(grunt) {
     }
 
     var optionOfStaticDir = grunt.option('optionOfStaticDir');
+    optionOfStaticDir = optionOfStaticDir || 'CJfed';
 
-    optionOfStaticDir = optionOfStaticDir || 'fe';
+    var domain = grunt.option('domain');
+    var optionOfStaticEnv = domain && packPkg.env[domain] || packPkg.env.prd;
 
     packPkg.custom = {};
     packPkg.custom.commonModulePathLocal = path.resolve(projectPath + '/' + packPkg[optionOfStaticDir].commonModulePathLocal);
-    packPkg.custom.commonModulePath = packPkg[optionOfStaticDir].commonModulePath;
-    packPkg.custom.commonModulePathHybrid = packPkg[optionOfStaticDir].commonModulePathHybrid;
+    packPkg.custom.commonModulePath = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePath;
+    packPkg.custom.commonModulePathHybrid = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePathHybrid;
 
     console.log(packPkg.custom.commonModulePathLocal);
 
