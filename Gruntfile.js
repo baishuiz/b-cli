@@ -26,10 +26,11 @@ module.exports = function(grunt) {
     optionOfStaticDir = optionOfStaticDir || 'CJfed';
 
     var domain = grunt.option('domain');
-    var optionOfStaticEnv = domain && packPkg.env[domain] || packPkg.env.prd;
+    var optionOfStaticEnv = domain && packPkg.env[domain] || packPkg.env.pro;
 
     packPkg.custom = {};
     packPkg.custom.commonModulePathLocal = path.resolve(projectPath + '/' + packPkg[optionOfStaticDir].commonModulePathLocal);
+    packPkg.custom.commonModulePathLocalHybrid = path.resolve(projectPath + '/' + packPkg[optionOfStaticDir].commonModulePathLocalHybrid);
     packPkg.custom.commonModulePath = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePath;
     packPkg.custom.commonModulePathHybrid = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePathHybrid;
 
@@ -691,7 +692,7 @@ module.exports = function(grunt) {
         'buildHybrid',
         'clean:dest'
     ]);
-    var hybridDebug = buildBefore.concat(['getCommonModuleConfigHybrid']).concat(buildHybrdDebugTask).concat([
+    var hybridDebug = buildBefore.concat(['getCommonModuleConfigLocalHybrid']).concat(buildHybrdDebugTask).concat([
         'buildHybrid',
         'clean:dest'
     ]);

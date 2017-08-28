@@ -57,4 +57,15 @@ module.exports = function(grunt) {
         requestConfig(grunt, commonModulePathHybrid, done);
     });
 
+    grunt.registerTask('getCommonModuleConfigLocalHybrid', 'replace common module from local static-resource folder for hybrid', function() {
+        var commonModulePathLocalHybrid = grunt.config('packPkg').custom.commonModulePathLocalHybrid;
+
+        if (!grunt.file.exists(commonModulePathLocalHybrid)) {
+            throw new Error('can not get common module config: ' + commonModulePathLocalHybrid);
+        }
+
+        var config = grunt.file.readJSON(commonModulePathLocalHybrid);
+        grunt.config('commonModule', config);
+    });
+
 }
