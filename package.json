@@ -38,7 +38,7 @@
   "fe": {
     "commonModulePath": "fe/config.json",
     "commonModulePathHybrid": "fe/config.hybrid.json",
-    "commonModulePathLocal": "../static-resource/dist/fe/config.json"
+    "commonModulePathLocal": "../static-resource/dist/fe/config.json",
     "commonModulePathLocalHybrid": "../static-resource/dist/fe/config.hybrid.json"
   }
 }
