@@ -152,6 +152,12 @@ module.exports = function(grunt) {
                     filter: 'isFile'
                 }, {
                     expand: true,
+                    cwd: 'src/template/fake/',
+                    src: "*.html",
+                    dest: 'dest/template/fake',
+                    filter: 'isFile'
+                }, {
+                    expand: true,
                     cwd: 'src/webresource/css/',
                     src: "*.css",
                     dest: 'dest/webresource/css',
@@ -645,7 +651,7 @@ module.exports = function(grunt) {
         'replaceModule', 'includController',
         'filerev:img', 'replaceImage',
         'filerev:css', 'replaceStyle',
-        'filerev:html', 'createAppJS',
+        'filerev:html','createAppJS',
         'generateLayout',
         'copy:originSource', // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
         'clean:after'
@@ -668,6 +674,7 @@ module.exports = function(grunt) {
         'filerev:img-hybrid', 'replaceImage',
         'cssmin',
         'filerev:css-hybrid', 'replaceStyle',
+        'replaceFakeAnchor',
         'htmlmin:dist',
         'filerev:html-hybrid', 'createAppJS',
         'generateLayout',
@@ -682,6 +689,7 @@ module.exports = function(grunt) {
         'replaceModule', 'includController',
         'filerev:img-hybrid', 'replaceImage',
         'filerev:css-hybrid', 'replaceStyle',
+        'replaceFakeAnchor',
         'filerev:html-hybrid', 'createAppJS',
         'generateLayout',
         'copy:originSource', // TODO：临时方案，保留图片源文件，避免JS中调用图片出错
