@@ -93,7 +93,7 @@ module.exports = function(grunt) {
             },
             js: {
                 options: filerevConfigOptions,
-                src: ['dest/b-UI/**/*.js', 'dest/pages/**/*.js', 'dest/libs/**/*.js', 'dest/service/**/*.js', 'dest/module/**/*.js']
+                src: ['dest/AirUI/**/*.js', 'dest/b-UI/**/*.js', 'dest/pages/**/*.js', 'dest/libs/**/*.js', 'dest/service/**/*.js', 'dest/module/**/*.js']
             },
             'js-hybrid': {
                 options: filerevConfigHybridOptions,
@@ -126,6 +126,7 @@ module.exports = function(grunt) {
                     src: [
                         'libs/**',
                         'module/**',
+                        'AirUI/**',
                         'b-UI/**'
                     ]
                 }, {
@@ -456,7 +457,7 @@ module.exports = function(grunt) {
 
         grunt.file.expand({
             filter: "isFile"
-        }, ["./dest/b-UI/**/*", "./dest/service/*", "./dest/module/**/*"]).forEach(function(dir) {
+        }, ["./dest/AirUI/**/*", "./dest/b-UI/**/*", "./dest/service/*", "./dest/module/**/*"]).forEach(function(dir) {
             var exists = grunt.file.exists(dir);
             if (exists) {
                 var content = grunt.file.read(dir);
@@ -467,7 +468,7 @@ module.exports = function(grunt) {
 
         grunt.file.expand({
             filter: "isFile"
-        }, ["./dest/b-UI/**/*", "./dest/module/**/*", "./dest/pages/*", "./dest/pages/partials/*", "./dest/app.js"]).forEach(function(dir) {
+        }, ["./dest/AirUI/**/*", "./dest/b-UI/**/*", "./dest/module/**/*", "./dest/pages/*", "./dest/pages/partials/*", "./dest/app.js"]).forEach(function(dir) {
             var exists = grunt.file.exists(dir);
             if (exists) {
                 var content = grunt.file.read(dir);
