@@ -13,15 +13,26 @@ function getFullStaticConfig(config) {
 }
 
 module.exports = function(grunt) {
+  var domain = grunt.option('domain');
 
   grunt.registerTask('buildHybrid-layout', function(){
     var configs = grunt.config('hybridConfig');
     var commonModule = grunt.config('commonModule') || {};
     var fullStaticConfig = getFullStaticConfig(configs);
+    var postfix = ifDominSameWithConfigKey(configs);
 
-    
-    for (var key in configs) {
-      var config = configs[key];
+    if (!postfix) {
+      for (var key in configs) {
+        createLayoutFile(key);
+      }
+
+    } else {
+      createLayoutFile(postfix);
+    }
+
+    function createLayoutFile(key) {
+      key = key.toLocaleLowerCase();
+      var config = configs[key.toLocaleUpperCase()] || configs[key.toLocaleLowerCase()];
       var staticConfig = getStaticConfig(config);
       var layout = grunt.file.read('./' + PREFIX + key + '/layouts/index-hybrid.html');
 
@@ -37,9 +48,21 @@ module.exports = function(grunt) {
 
       grunt.file.write('./' + PREFIX + key + '/index.html', layout);
     }
-
-
   })
+
+  function ifDominSameWithConfigKey(configs) {
+    var keys = Object.keys(configs);
+    if (keys.indexOf(domain.toLocaleLowerCase()) < 0 && keys.indexOf(domain.toLocaleUpperCase()) < 0) {
+      return null;
+      for (var key in configs) {
+        addConfig(key);
+      }
+
+    } else {
+      return domain;
+    }
+  }
+
 
   grunt.registerTask('buildHybrid', 'build Hybrid', function() {
     var configs = grunt.config('hybridConfig');
@@ -50,7 +73,18 @@ module.exports = function(grunt) {
     var copyConfig = {};
     var copyTaskAry = [];
 
-    for (var key in configs) {
+    var postfix = ifDominSameWithConfigKey(configs);
+    if (!postfix) {
+      for (var key in configs) {
+        addConfig(key);
+      }
+
+    } else {
+      addConfig(postfix);
+    }
+
+    function addConfig(key) {
+      key = key.toLocaleLowerCase();
       var prefixedKey = PREFIX + key;
 
       cleanConfig[prefixedKey] = [prefixedKey + '/'];

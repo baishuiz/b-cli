@@ -34,7 +34,6 @@ module.exports = function(grunt) {
     packPkg.custom.commonModulePath = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePath;
     packPkg.custom.commonModulePathHybrid = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePathHybrid;
 
-    console.log(packPkg.custom.commonModulePathLocal);
 
     var basePath = projectPath + '/webapp';
     if (!grunt.file.exists(basePath)) {
@@ -708,6 +707,13 @@ module.exports = function(grunt) {
         'buildHybrid',
         'clean:dest'
     ]);
+
+    // 为了 build\build-debug\hybrid 读取本地环境不报错
+    if (domain == 'local' || domain == 'dev') {
+        build = run;
+        buildDebug = runDebug;
+        hybrid = hybridDebug;
+    }
 
     grunt.registerTask('default', run);
     grunt.registerTask('debug', runDebug);
