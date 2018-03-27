@@ -352,7 +352,7 @@ module.exports = function(grunt) {
         var service = grunt.config('service');
         var appPath = 'dest/app.js';
         var appContent = grunt.file.read(appPath);
-        var result = 'createStaticConfig();\n';
+        var result = '';
         var summary = replacedSummary();
 
         // 获取路由sign
@@ -391,8 +391,7 @@ module.exports = function(grunt) {
             'b.service.set(service.name, service.param);\n' +
             '}\n';
 
-        result += 'routerConfig = routerConfig; serviceConfig = serviceConfig;\n'
-
+        // 拼接app.js内容
         result += appContent + after;
 
         grunt.file.defaultEncoding = 'utf8';
@@ -400,7 +399,7 @@ module.exports = function(grunt) {
     }
 
     grunt.registerTask('createAppJS', 'merge router, service & app.js', function() {
-        createAppJS(';function createAppJS(needInit){', '}');
+        createAppJS('(function(){', '})()');
     });
 
     grunt.registerTask('includController', 'includController', function() {

@@ -3,12 +3,7 @@ var PREFIX = 'hybrid-tmp-';
 var layoutPath = './dest/layouts/index-hybrid.html';
 
 function getStaticConfig(config) {
-  var staticConfig = '<script>;function createStaticConfig() {staticConfig=' + JSON.stringify(config) + ';createAppJS(true);}</script>';
-  return staticConfig;
-}
-
-function getFullStaticConfig(config) {
-  var staticConfig = '<script>var fullStaticConfig=' + JSON.stringify(config) + ';</script>';
+  var staticConfig = '<script>var staticConfig=' + JSON.stringify(config) + ';</script>';
   return staticConfig;
 }
 
@@ -17,17 +12,12 @@ module.exports = function(grunt) {
   grunt.registerTask('buildHybrid-layout', function(){
     var configs = grunt.config('hybridConfig');
     var commonModule = grunt.config('commonModule') || {};
-    var fullStaticConfig = getFullStaticConfig(configs);
 
-    
     for (var key in configs) {
       var config = configs[key];
       var staticConfig = getStaticConfig(config);
       var layout = grunt.file.read('./' + PREFIX + key + '/layouts/index-hybrid.html');
 
-
-      // 存储全部的配置，用于APP切换环境
-      layout = layout.replace(/{{fullStaticConfig}}/g, fullStaticConfig);
       layout = layout.replace(/{{staticConfig}}/g, staticConfig);
       layout = layout.replace(/{{\$resourceURL}}/g, config.resourceURL || '');
 
@@ -37,8 +27,6 @@ module.exports = function(grunt) {
 
       grunt.file.write('./' + PREFIX + key + '/index.html', layout);
     }
-
-
   })
 
   grunt.registerTask('buildHybrid', 'build Hybrid', function() {
