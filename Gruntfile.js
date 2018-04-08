@@ -203,6 +203,23 @@ module.exports = function(grunt) {
                     dest: 'dest/webresource/',
                     filter: 'isFile'
                 }]
+            },
+            zipFiles: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '../',
+                        dest: 'release/h5/',
+                        src: ['*.client.zip']
+                    },
+                    {
+                        expand: true,
+                        cwd: '../',
+                        dest: 'release/hybrid/',
+                        src: ['*.zip', '!*.client.zip']
+                    }
+                ]
+
             }
         },
 
@@ -219,7 +236,8 @@ module.exports = function(grunt) {
 
         clean: {
             dest: ["dest/"],
-            after: ["dest/app.js", "dest/index.html"]
+            after: ["dest/app.js", "dest/index.html"],
+            release: ["release/"]
         },
 
         uglify: {
@@ -708,6 +726,11 @@ module.exports = function(grunt) {
         'clean:dest'
     ]);
 
+    var all = ['clean:release'].concat(build).concat(buildBefore).concat(['getCommonModuleConfigLocalHybrid']).concat(buildHybrdDebugTask).concat([
+        'buildHybrid',
+        'copy:zipFiles'
+    ]);
+
     grunt.registerTask('default', run);
     grunt.registerTask('debug', runDebug);
 
@@ -716,4 +739,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('hybrid', hybrid);
     grunt.registerTask('hybrid-debug', hybridDebug);
+
+
+    grunt.registerTask('all', all);
 };

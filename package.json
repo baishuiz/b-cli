@@ -1,6 +1,6 @@
 {
   "name": "cpack",
-  "version": "1.0.19",
+  "version": "1.0.28",
   "description": "cjia pack tool",
   "main": "pack.js",
   "author": "cjia",
@@ -25,6 +25,7 @@
   },
   "env": {
     "local": "../static-resource/dist/",
+    "dev": "../static-resource/dist/",
     "fat": "https://fat-oss.oss-cn-hangzhou.aliyuncs.com/",
     "pre": "https://image.cjbnb.com/",
     "pro": "https://image.cjia.com/"

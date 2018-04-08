@@ -14,7 +14,7 @@ var project = process.cwd();
 if (cmd === '-v' || cmd === '--version' || cmd === '--versions') {
     console.log(pkg.version);
     process.exit(1);
-} else if (!['', 'default', 'debug', 'build', 'build-debug', 'hybrid', 'hybrid-debug'].includes(cmd)) {
+} else if (!['', 'default', 'debug', 'build', 'build-debug', 'hybrid', 'hybrid-debug', 'all'].includes(cmd)) {
     console.error('command "' + cmd +  '" not found');
     process.exit(1);
 }
