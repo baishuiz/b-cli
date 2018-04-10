@@ -1,5 +1,5 @@
 var configPath = '../config.hybrid.json';
-var PREFIX = 'hybrid-tmp-';
+var PREFIX = 'hybrid-tmp';
 var layoutPath = './dest/layouts/index-hybrid.html';
 
 function getStaticConfig(config) {
@@ -24,10 +24,8 @@ module.exports = function(grunt) {
     var postfix = ifDominSameWithConfigKey(configs);
 
     if (!postfix) {
-      for (var key in configs) {
-        createLayoutFile(key);
-      }
-
+      var keys = Object.keys(configs);
+      createLayoutFile(keys[0]);
     } else {
       createLayoutFile(postfix);
     }
@@ -36,7 +34,7 @@ module.exports = function(grunt) {
       key = key.toLocaleLowerCase();
       var config = configs[key.toLocaleUpperCase()] || configs[key.toLocaleLowerCase()];
       var staticConfig = getStaticConfig(config);
-      var layout = grunt.file.read('./' + PREFIX + key + '/layouts/index-hybrid.html');
+      var layout = grunt.file.read('./' + PREFIX + '/layouts/index-hybrid.html');
 
       layout = layout.replace(/{{staticConfig}}/g, fullStaticConfig + staticConfig);
       layout = layout.replace(/{{\$resourceURL}}/g, config.resourceURL || '');
@@ -45,7 +43,7 @@ module.exports = function(grunt) {
         return '<script src="../lib/b.js"></script>';
       })
 
-      grunt.file.write('./' + PREFIX + key + '/index.html', layout);
+      grunt.file.write('./' + PREFIX + '/index.html', layout);
     }
   })
 
@@ -66,28 +64,17 @@ module.exports = function(grunt) {
     var compressTaskAry = [];
     var copyConfig = {};
     var copyTaskAry = [];
+    addConfig();
 
-    var postfix = ifDominSameWithConfigKey(configs);
-    if (!postfix) {
-      for (var key in configs) {
-        addConfig(key);
-      }
-
-    } else {
-      addConfig(postfix);
-    }
-
-    function addConfig(key) {
-      key = key.toLocaleLowerCase();
-      var prefixedKey = PREFIX + key;
-
+    function addConfig() {
+      var prefixedKey = PREFIX;
       cleanConfig[prefixedKey] = [prefixedKey + '/'];
 
       cleanTaskAry.push('clean:' + prefixedKey);
 
       compressConfig[prefixedKey] = {
         options: {
-          archive: '../<%= pkg.channel %>-' + key + '.zip'
+          archive: '../<%= pkg.channel %>' + '.zip'
         },
         files: [
           {expand: true, cwd: prefixedKey + '/', src: ['**'], dest: ''}
