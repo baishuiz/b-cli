@@ -34,7 +34,6 @@ module.exports = function(grunt) {
     packPkg.custom.commonModulePath = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePath;
     packPkg.custom.commonModulePathHybrid = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePathHybrid;
 
-
     var basePath = projectPath + '/webapp';
     if (!grunt.file.exists(basePath)) {
         throw new Error('no project folder: ' + projectPath);
@@ -389,8 +388,12 @@ module.exports = function(grunt) {
             activeRouter.sign = map[activeRouter.viewName];
         }
 
+        result += before;
+        result += '\nvar routerConfig, serviceConfig;\n'
+        result += 'b.ready(function() {\n';
+
         // 拼接路由
-        result += before + '\n var routerConfig = ' + JSON.stringify(routerObj, null, 4) + ';\n';
+        result += 'routerConfig = ' + JSON.stringify(routerObj, null, 4) + ';\n';
         result += 'for (var i = 0, len = routerConfig.rules.length, router; i < len; i++) {\n' +
             'router = routerConfig.rules[i];\n' +
             'router.rule = routerConfig.baseURL + router.rule;\n' +
@@ -398,7 +401,7 @@ module.exports = function(grunt) {
             '}\n';
 
         // 拼接service
-        result += 'var serviceConfig = ' + service + ';\n';
+        result += 'serviceConfig = ' + service + ';\n';
         result += 'for (var i = 0, len = serviceConfig.config.length, config; i < len; i++) {\n' +
             'config = serviceConfig.config[i];\n' +
             'b.service.setConfig(config.name, config.param);\n' +
@@ -408,6 +411,7 @@ module.exports = function(grunt) {
             'b.service.set(service.name, service.param);\n' +
             '}\n';
 
+        result += '});\n'
         // 拼接app.js内容
         result += appContent + after;
 
@@ -725,18 +729,18 @@ module.exports = function(grunt) {
         'clean:dest'
     ]);
 
+    var all = ['clean:release'].concat(build).concat(buildBefore).concat(['getCommonModuleConfigLocalHybrid']).concat(buildHybrdDebugTask).concat([
+        'buildHybrid',
+        'copy:zipFiles'
+    ]);
+
     // 为了 build\build-debug\hybrid 读取本地环境不报错
     if (domain == 'local' || domain == 'dev') {
         build = run;
         buildDebug = runDebug;
         hybrid = hybridDebug;
     }
-    
-    var all = ['clean:release'].concat(build).concat(buildBefore).concat(['getCommonModuleConfigLocalHybrid']).concat(buildHybrdDebugTask).concat([
-        'buildHybrid',
-        'copy:zipFiles'
-    ]);
-
+        
     grunt.registerTask('default', run);
     grunt.registerTask('debug', runDebug);
 

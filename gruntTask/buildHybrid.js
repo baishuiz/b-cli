@@ -3,7 +3,14 @@ var PREFIX = 'hybrid-tmp-';
 var layoutPath = './dest/layouts/index-hybrid.html';
 
 function getStaticConfig(config) {
-  var staticConfig = '<script>var staticConfig=' + JSON.stringify(config) + ';</script>';
+  var staticConfig = '<script>var staticConfig; b.ready(function(deviceInfo){\n';
+  staticConfig += 'deviceInfo = (deviceInfo || {}).result || {};\n if (deviceInfo && deviceInfo.environment) {staticConfig = fullStaticConfig[deviceInfo.environment.toLocaleLowerCase()] || ""}';
+  staticConfig += ';});</script>';
+  return staticConfig;
+}
+
+function getFullStaticConfig(config) {
+  var staticConfig = '<script>var fullStaticConfig=' + JSON.stringify(config) + ';</script>';
   return staticConfig;
 }
 
@@ -31,7 +38,7 @@ module.exports = function(grunt) {
       var staticConfig = getStaticConfig(config);
       var layout = grunt.file.read('./' + PREFIX + key + '/layouts/index-hybrid.html');
 
-      layout = layout.replace(/{{staticConfig}}/g, staticConfig);
+      layout = layout.replace(/{{staticConfig}}/g, fullStaticConfig + staticConfig);
       layout = layout.replace(/{{\$resourceURL}}/g, config.resourceURL || '');
 
       layout = layout.replace(/(<script[^>]+=["'])(b\.(\d\.\d)\.js)(["'][^>]*>)/, function(str, $1, path, version){
@@ -46,10 +53,6 @@ module.exports = function(grunt) {
     var keys = Object.keys(configs);
     if (keys.indexOf(domain.toLocaleLowerCase()) < 0 && keys.indexOf(domain.toLocaleUpperCase()) < 0) {
       return null;
-      for (var key in configs) {
-        addConfig(key);
-      }
-
     } else {
       return domain;
     }
