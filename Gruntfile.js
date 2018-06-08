@@ -33,6 +33,7 @@ module.exports = function(grunt) {
     packPkg.custom.commonModulePathLocalHybrid = path.resolve(projectPath + '/' + packPkg[optionOfStaticDir].commonModulePathLocalHybrid);
     packPkg.custom.commonModulePath = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePath;
     packPkg.custom.commonModulePathHybrid = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePathHybrid;
+console.log(commonModulePathLocal);
 
     var basePath = projectPath + '/webapp';
     if (!grunt.file.exists(basePath)) {
@@ -729,7 +730,7 @@ module.exports = function(grunt) {
         'clean:dest'
     ]);
 
-    var all = ['clean:release'].concat(build).concat(buildBefore).concat(['getCommonModuleConfigLocalHybrid']).concat(buildHybrdDebugTask).concat([
+    var all = ['clean:release'].concat(build).concat(buildBefore).concat(['getCommonModuleConfigHybrid']).concat(buildHybrdTask).concat([
         'buildHybrid',
         'copy:zipFiles'
     ]);
