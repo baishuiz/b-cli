@@ -19,7 +19,30 @@ if (cmd === '-v' || cmd === '--version' || cmd === '--versions') {
     process.exit(1);
 }
 
-childProcess.exec('grunt ' + cmd + ' --project=' + project + ' --domain=' + (args[1] || '') + ' --optionOfStaticDir=' + (args[2] || ''), {
+/**
+ * domain 和 dir 有两种传入方式
+ * 1. --domain --optionOfStaticDir
+ * 2. 固定的 key
+ * 
+ * 优先级：先1后2
+ */
+var domain = '';
+var optionOfStaticDir = '';
+args = args.filter(function (item) {
+    if (item.indexOf('--domain') >= 0) {
+        domain = item.split('=')[1];
+    }
+    if (item.indexOf('--optionOfStaticDir') >= 0) {
+        optionOfStaticDir = item.split('=')[1];
+    }
+    return item.indexOf('=') < 0;
+});
+
+domain = domain || args[1] || '';
+optionOfStaticDir = optionOfStaticDir || args[2] || '';
+
+
+childProcess.exec('grunt ' + cmd + ' --project=' + project + ' --domain=' + domain + ' --optionOfStaticDir=' + optionOfStaticDir, {
     cwd: __dirname
 }, function(error, stdout, stderr) {
     if (error !== null) {
