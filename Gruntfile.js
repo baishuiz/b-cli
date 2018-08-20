@@ -22,21 +22,6 @@ module.exports = function(grunt) {
         throw new Error('project path is not found.');
     }
 
-    /**
-     
-    var optionOfStaticDir = grunt.option('optionOfStaticDir');
-    optionOfStaticDir = optionOfStaticDir || 'CJfed';
-
-    var domain = grunt.option('domain');
-    var optionOfStaticEnv = domain && packPkg.env[domain] || packPkg.env.pro;
-
-    packPkg.custom = {};
-    packPkg.custom.commonModulePathLocal = path.resolve(projectPath + '/' + packPkg[optionOfStaticDir].commonModulePathLocal);
-    packPkg.custom.commonModulePathLocalHybrid = path.resolve(projectPath + '/' + packPkg[optionOfStaticDir].commonModulePathLocalHybrid);
-    packPkg.custom.commonModulePath = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePath;
-    packPkg.custom.commonModulePathHybrid = optionOfStaticEnv + packPkg[optionOfStaticDir].commonModulePathHybrid;
-     */
-
     var optionOfStaticDir = grunt.option('optionOfStaticDir');
     optionOfStaticDir = optionOfStaticDir || 'CJfed';
 
@@ -48,10 +33,6 @@ module.exports = function(grunt) {
     packPkg.custom.commonModulePathHybrid = optionOfStaticEnv + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePath : optionOfStaticDir) + packPkg.configFileName.hybrid;
     packPkg.custom.commonModulePathLocal = path.resolve(projectPath + '/' + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePathLocal : optionOfStaticDir)  + packPkg.configFileName.h5);
     packPkg.custom.commonModulePathLocalHybrid = path.resolve(projectPath + '/' + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePathLocal : optionOfStaticDir) + packPkg.configFileName.hybrid);
-console.log(packPkg.custom.commonModulePath);
-console.log(packPkg.custom.commonModulePathHybrid);
-console.log(packPkg.custom.commonModulePathLocal);
-console.log(packPkg.custom.commonModulePathLocalHybrid);
 
     var basePath = projectPath + '/webapp';
     if (!grunt.file.exists(basePath)) {
