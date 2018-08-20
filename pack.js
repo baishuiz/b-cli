@@ -10,11 +10,20 @@ var args = process.argv.slice(2);
 var cmd = args[0] || 'default';
 var project = process.cwd();
 
+var commandList = ['', 
+                    'default', 
+                    'debug', 
+                    'build', 
+                    'build-debug', 
+                    'hybrid', 
+                    'hybrid-debug', 
+                    'all'];
+
 // TODO 命令，help
 if (cmd === '-v' || cmd === '--version' || cmd === '--versions') {
     console.log(pkg.version);
     process.exit(1);
-} else if (!['', 'default', 'debug', 'build', 'build-debug', 'hybrid', 'hybrid-debug', 'all'].includes(cmd)) {
+} else if (!commandList.includes(cmd)) {
     console.error('command "' + cmd +  '" not found');
     process.exit(1);
 }

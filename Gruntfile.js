@@ -19,7 +19,7 @@ module.exports = function(grunt) {
 
     var projectPath = grunt.option('project');
     if (!projectPath) {
-        throw new Error('project empty');
+        throw new Error('project path is not found.');
     }
 
     /**

@@ -27,3 +27,8 @@ Command:
     hybrid-debug    # hybrid without uglify
 
 ```
+
+## History
+---
+### v1.0.34
+  * 
