@@ -1,9 +1,10 @@
 {
-  "name": "b-cli",
+  "name": "@baishuiz/b-cli",
   "version": "0.0.1",
   "description": "b-cli",
   "main": "pack.js",
   "author": "baishuiz@gmail.com",
+  "license": "ISC",
   "dependencies": {
     "cock": "^0.0.8",
     "commander": "^2.17.1",

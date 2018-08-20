@@ -7,7 +7,7 @@
 ## Installing the CLI
 ```
 npm install -g grunt-cli  # if no grunt
-npm install -g b-cli
+npm install -g @baishuiz/b-cli
 ```
 This will put the <code>b</code> command in your system path, allowing it to be run from directory.
 
@@ -18,7 +18,7 @@ b init my-project-name
 It will create a directory called `my-project-name` inside the current folder.  
 Inside that directory, it will generate the initial project structure.
 
-
+<!-- 
 ## Command List
 ---
 ```
@@ -40,4 +40,4 @@ Command:
 ```
 
 ## History
----
+--- -->
