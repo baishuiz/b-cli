@@ -1,11 +1,12 @@
 {
-  "name": "cpack",
-  "version": "1.0.33",
-  "description": "cjia pack tool",
+  "name": "b-cli",
+  "version": "0.0.1",
+  "description": "b-cli",
   "main": "pack.js",
-  "author": "cjia",
-  "license": "",
+  "author": "baishuiz@gmail.com",
   "dependencies": {
+    "cock": "^0.0.8",
+    "commander": "^2.17.1",
     "grunt": "^1.0.1",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-compress": "^1.3.0",
@@ -20,31 +21,11 @@
     "jsonminify": "^0.4.1",
     "node-notifier": "^4.6.1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:baishuiz/b-cli.git"
+  },
   "bin": {
     "cpack": "./pack.js"
-  },
-  "env": {
-    "local": "../static-resource/dist/",
-    "dev": "../static-resource/dist/",
-    "fat": "https://fat-oss.oss-cn-hangzhou.aliyuncs.com/",
-    "fat-op": "https://fat-oss.oss-cn-hangzhou.aliyuncs.com/",
-    "fat-pms": "https://fat-oss.oss-cn-hangzhou.aliyuncs.com/",
-    "fat-apt": "https://fat-oss.oss-cn-hangzhou.aliyuncs.com/",
-    "fat-inf": "https://fat-oss.oss-cn-hangzhou.aliyuncs.com/",
-    "pre": "https://image.cjbnb.com/",
-    "pro": "https://image.cjia.com/",
-    "prd": "https://image.cjia.com/"
-  },
-  "CJfed": {
-    "commonModulePath": "CJfed/",
-    "commonModulePathLocal": "../static-resource/dist/CJfed/"
-  },
-  "fe": {
-    "commonModulePath": "fe/",
-    "commonModulePathLocal": "../static-resource/dist/fe/"
-  },
-  "configFileName": {
-    "hybrid": "config.hybrid.json",
-    "h5": "config.json" 
   }
 }
