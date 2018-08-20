@@ -1,17 +1,28 @@
-# cpack
+# B-CLI
 ---
-> cjia pack tool, based on grunt
 
-## Install
+
+
+
+## Installing the CLI
 ```
 npm install -g grunt-cli  # if no grunt
-npm install -g cpack
+npm install -g b-cli
 ```
+This will put the <code>b</code> command in your system path, allowing it to be run from directory.
 
-## Command
+## Create Project
+```
+b init my-project-name
+```
+It will create a directory called `my-project-name` inside the current folder.  
+Inside that directory, it will generate the initial project structure.
+
+
+## Command List
 ---
 ```
-Usage: cpack [Command]
+Usage: b [Command]
 
 Command:
     default         # standard pack *optional, *default
@@ -30,5 +41,3 @@ Command:
 
 ## History
 ---
-### v1.0.34
-  * 
