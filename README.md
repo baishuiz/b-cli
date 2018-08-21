@@ -18,6 +18,22 @@ b init my-project-name
 It will create a directory called `my-project-name` inside the current folder.  
 Inside that directory, it will generate the initial project structure.
 
+## Build App
+### build webapp
+```
+b build webapp [--debug]
+```
+
+### build IOS
+```
+b build IOS
+```
+
+### build Android
+```
+b build Android
+```
+
 <!-- 
 ## Command List
 ---

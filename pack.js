@@ -7,9 +7,64 @@ var path = require('path');
 var notifier = require('node-notifier');
 var pkg = require('./package.json');
 
-commander.version(pkg.version, '-v, --version')
+const project = process.cwd();
+
+commander.version(pkg.version, '-v, --version');
 commander.command('init <projectName>')
+         .description('generate the initial project structure')
          .action(function(projectName){
              cock.init(projectName);
-         });         
+         }); 
+commander.command('build <platform>').action(buildApp);                          
 commander.parse(process.argv);
+
+
+function buildApp(platform){
+    switch (platform) {
+        case 'webapp':
+            buildWEBApp();
+            break;        
+        case 'ios':
+            break;
+        case 'ios':
+            break;            
+    
+        default:
+            break;
+    }
+}
+
+function buildWEBApp(){
+    const task = 'webapp';
+    build(task, project);
+}
+
+function build(task, project){
+    // childProcess.exec('grunt ' + task + ' --project=' + project + ' --domain=' + domain + ' --optionOfStaticDir=' + optionOfStaticDir, {
+    childProcess.exec(
+        'grunt ' + task + ' --project=' + project , 
+        {cwd: __dirname}, 
+        function(error, stdout, stderr) {
+            if (error !== null) {
+                console.error('exec error: ' + error);
+                console.error('exec error: ' + stderr);
+                console.error(stdout);
+                notify(project + ': Pack Failed: ' + JSON.stringify(error));
+                process.exit(1);
+            } else {
+                notify(project + ': Pack Success');
+            }
+        }
+    );
+}
+
+
+
+
+function notify(msg) {
+    notifier.notify({
+        title: 'Pack',
+        icon: path.join(__dirname, 'resource/icon.png'),
+        message: msg
+    });
+}

@@ -1,4 +1,4 @@
-var jsonminify = require('jsonminify');
+var jsonminify = require('jsonminify'); 
 var path = require('path');
 
 module.exports = function(grunt) {
@@ -15,6 +15,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadTasks('./gruntTask');
 
+    // b-cli package.json
     var packPkg = grunt.file.readJSON('./package.json');
 
     var projectPath = grunt.option('project');
@@ -22,25 +23,34 @@ module.exports = function(grunt) {
         throw new Error('project path is not found.');
     }
 
-    var optionOfStaticDir = grunt.option('optionOfStaticDir');
-    optionOfStaticDir = optionOfStaticDir || 'CJfed';
-
-    var domain = grunt.option('domain');
-    var optionOfStaticEnv = domain && packPkg.env[domain] || domain || packPkg.env.pro;
-
-    packPkg.custom = {};
-    packPkg.custom.commonModulePath = optionOfStaticEnv + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePath : optionOfStaticDir) + packPkg.configFileName.h5;
-    packPkg.custom.commonModulePathHybrid = optionOfStaticEnv + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePath : optionOfStaticDir) + packPkg.configFileName.hybrid;
-    packPkg.custom.commonModulePathLocal = path.resolve(projectPath + '/' + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePathLocal : optionOfStaticDir)  + packPkg.configFileName.h5);
-    packPkg.custom.commonModulePathLocalHybrid = path.resolve(projectPath + '/' + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePathLocal : optionOfStaticDir) + packPkg.configFileName.hybrid);
-
-    var basePath = projectPath + '/webapp';
-    if (!grunt.file.exists(basePath)) {
-        throw new Error('no project folder: ' + projectPath);
-    }
-    grunt.file.setBase(basePath);
-
     var revExtend = '_';
+
+    // var optionOfStaticDir = grunt.option('optionOfStaticDir');
+    // optionOfStaticDir = optionOfStaticDir || 'CJfed';
+
+    // var domain = grunt.option('domain');
+    // var optionOfStaticEnv = domain && packPkg.env[domain] || domain || packPkg.env.pro;
+
+    // packPkg.custom = {};
+    // packPkg.custom.commonModulePath = optionOfStaticEnv + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePath : optionOfStaticDir) + packPkg.configFileName.h5;
+    // packPkg.custom.commonModulePathHybrid = optionOfStaticEnv + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePath : optionOfStaticDir) + packPkg.configFileName.hybrid;
+    // packPkg.custom.commonModulePathLocal = path.resolve(projectPath + '/' + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePathLocal : optionOfStaticDir)  + packPkg.configFileName.h5);
+    // packPkg.custom.commonModulePathLocalHybrid = path.resolve(projectPath + '/' + (packPkg[optionOfStaticDir] ? packPkg[optionOfStaticDir].commonModulePathLocal : optionOfStaticDir) + packPkg.configFileName.hybrid);
+
+    setCWD();
+    /**
+     * set current working diectory
+     * 
+     */
+    function setCWD(){
+        var basePath = projectPath + '/webapp';
+        if (!grunt.file.exists(basePath)) {
+            throw new Error('no project folder: ' + projectPath);
+        }
+        grunt.file.setBase(basePath);
+    }
+
+    
     var replacedSummary = function() {
         var summaryOrigin = grunt.filerev && grunt.filerev.summary || {};
         var summary = {};
@@ -54,7 +64,6 @@ module.exports = function(grunt) {
         return grunt.config('commonModule') || {};
     };
 
-    var hybridConfigPath = '../config.hybrid.json';
     var filerevConfigOptions = {
         algorithm: 'md5',
         length: 8,
@@ -69,13 +78,17 @@ module.exports = function(grunt) {
             return basename + '.' + extension;
         }
     };
-    
+
+    function getProjectConfig(configPath){
+        return grunt.file.exists(configPath) ? grunt.file.readJSON(configPath) : {};
+    }
+
     grunt.initConfig({
         packPkg: packPkg, // 打包模块的 pkg
         pkg: grunt.file.readJSON('../package.json'), // 项目的 pkg
         router: grunt.file.read('src/router.json'),
         service: grunt.file.read('src/service.json'),
-        hybridConfig: grunt.file.exists(hybridConfigPath) ? grunt.file.readJSON(hybridConfigPath) : {},
+        hybridConfig: getProjectConfig('../config.hybrid.json'),
         output: {
             fileName: '<%= pkg.name %>.<%= pkg.version %>.js',
             minFileName: '<%= pkg.name %>.<%= pkg.version %>.js'
@@ -310,53 +323,66 @@ module.exports = function(grunt) {
         }
 
     });
-
-    grunt.registerTask("concatController", "your description", function() {
+    
+    /**
+     * 合并 controller
+     */
+    grunt.registerTask("concatController", "concat controller", function() {
         // read all subdirectories from your modules folder
-        grunt.file.expand({
-            filter: "isDirectory"
-        }, ["./src/pages/*", '!./src/pages/partials']).forEach(function(dir) {
-            dir = dir.match(/\/([^\/]+)$/)[1];
-            // get the current concat config
-            var concat = grunt.config.get('concat') || {};
-            // set the config for this modulename-directory
-            concat[dir] = {
-                src: [
-                    './src/pages/' + dir + '/*.js'
-                    //  '!/modules/' + dir + '/js/compiled.js'
-                ],
+        grunt.file.expand(
+            { filter: "isDirectory"},
+            ["./src/pages/*", '!./src/pages/partials'])
+            .forEach(function(dir) {
+                
+                // get page folder name form full path string
+                dir = dir.match(/\/([^\/]+)$/)[1];
 
-                dest: './dest/pages/' + dir + '.js'
-            };
-            // save the new concat configuration
-            grunt.config.set('concat', concat);
-        });
+                // get the current concat config
+                var concat = grunt.config.get('concat') || {};
+
+                // set the config for this modulename-directory
+                concat[dir] = {
+                    src: [
+                        './src/pages/' + dir + '/*.js'
+                    ],
+                    dest: './dest/pages/' + dir + '.js'
+                };
+
+                // save the new concat configuration
+                grunt.config.set('concat', concat);
+            });
+
         // when finished run the concatinations
         if (grunt.config.get('concat')) {
             grunt.task.run('concat');
         }
     });
 
-    grunt.registerTask("concatStyle", "your description", function() {
+    /**
+     * 合并 style
+     */
+    grunt.registerTask("concatStyle", "concat Style", function() {
         // read all subdirectories from your modules folder
-        grunt.file.expand({
-            filter: "isDirectory"
-        }, "./src/webresource/css/pagestyle/*").forEach(function(dir) {
+        grunt.file.expand({filter: "isDirectory"}, "./src/webresource/css/pagestyle/*")
+        .forEach(function(dir) {
+
             dir = dir.match(/\/([^\/]+)$/)[1];
+
             // get the current concat config
             var concat = grunt.config.get('concat') || {};
+
             // set the config for this modulename-directory
             concat[dir] = {
                 src: [
                     './src/webresource/css/pagestyle/' + dir + '/*.css'
-                    //  '!/modules/' + dir + '/js/compiled.js'
                 ],
-
                 dest: './dest/webresource/css/' + dir + '.css'
             };
+
             // save the new concat configuration
             grunt.config.set('concat', concat);
         });
+
         // when finished run the concatinations
         if (grunt.config.get('concat')) {
             grunt.task.run('concat');
@@ -424,13 +450,16 @@ module.exports = function(grunt) {
         createAppJS('(function(){', '})()');
     });
 
+    /**
+     * 组合 view 与 controller
+     */
     grunt.registerTask('includController', 'includController', function() {
         var result = "";
 
-        var summary = replacedSummary()
+        var summary = replacedSummary();
 
         for (var key in summary) {
-            var view = key.match(/([^\/]+)\..+$/)[1]
+            var view = key.match(/([^\/]+)\..+$/)[1];
             var hash = summary[key].match(/([^\/._]+)\.[^.]+$/)[1];
             if (hash === view) {
                 hash = '';
@@ -449,16 +478,19 @@ module.exports = function(grunt) {
 
     });
 
+    /**
+     * 给模块签名
+     */
     grunt.registerTask('replaceModule', 'replaceModule', function() {
         var summary = replacedSummary();
         var commonModule = getCommonModule();
         commonModule = (commonModule || {}).module || {};
-        var replace = function(str, paramStr, curName) {
-            var name = curName || '';
+        var replace = function(str, paramStr, moduleName) {
+            var name = moduleName || '';
             var commonModulePath = commonModule[name];
 
             if (commonModulePath) {
-                name = '"' + curName + '", "' + commonModulePath + '"';
+                name = '"' + moduleName + '", "' + commonModulePath + '"';
             } else {
                 name = name.replace(/\./g, '/');
                 name = 'dest/' + name + '.js';
@@ -477,25 +509,27 @@ module.exports = function(grunt) {
             }
         }
 
+        // 替换 b.Module
         grunt.file.expand({
             filter: "isFile"
-        }, ["./dest/AirUI/**/*", "./dest/b-UI/**/*", "./dest/service/*", "./dest/module/**/*"]).forEach(function(dir) {
-            var exists = grunt.file.exists(dir);
+        }, ["./dest/AirUI/**/*", "./dest/b-UI/**/*", "./dest/service/*", "./dest/module/**/*"]).forEach(function(file) {
+            var exists = grunt.file.exists(file);
             if (exists) {
-                var content = grunt.file.read(dir);
+                var content = grunt.file.read(file);
                 content = content.replace(/Module\((['"]\s*([^'"]+)\s*['"]),/ig, replace);
-                grunt.file.write(dir, content);
+                grunt.file.write(file, content);
             }
         });
 
+        // 替换 require
         grunt.file.expand({
             filter: "isFile"
-        }, ["./dest/AirUI/**/*", "./dest/b-UI/**/*", "./dest/module/**/*", "./dest/pages/*", "./dest/pages/partials/*", "./dest/app.js"]).forEach(function(dir) {
-            var exists = grunt.file.exists(dir);
+        }, ["./dest/AirUI/**/*", "./dest/b-UI/**/*", "./dest/module/**/*", "./dest/pages/*", "./dest/pages/partials/*", "./dest/app.js"]).forEach(function(file) {
+            var exists = grunt.file.exists(file);
             if (exists) {
-                var content = grunt.file.read(dir);
+                var content = grunt.file.read(file);
                 content = content.replace(/require\((['"]\s*([^'"]+)\s*['"])\)/ig, replace);
-                grunt.file.write(dir, content);
+                grunt.file.write(file, content);
             }
         });
 
@@ -736,17 +770,17 @@ module.exports = function(grunt) {
     ]);
 
     // 为了 build\build-debug\hybrid 读取本地环境不报错
-    if (domain == 'local' || domain == 'dev') {
-        build = run;
-        buildDebug = runDebug;
-        hybrid = hybridDebug;
-    }
+    // if (domain == 'local' || domain == 'dev') {
+    //     build = run;
+    //     buildDebug = runDebug;
+    //     hybrid = hybridDebug;
+    // }
         
     grunt.registerTask('default', run);
     grunt.registerTask('debug', runDebug);
 
-    grunt.registerTask('build', build);
-    grunt.registerTask('build-debug', buildDebug);
+    grunt.registerTask('webapp', build);
+    grunt.registerTask('webapp-debug', buildDebug);
 
     grunt.registerTask('hybrid', hybrid);
     grunt.registerTask('hybrid-debug', hybridDebug);
