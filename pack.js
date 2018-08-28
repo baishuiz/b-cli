@@ -14,6 +14,7 @@ commander.command('init <projectName>')
          .description('generate the initial project structure')
          .action(function(projectName){
              cock.init(projectName);
+             initProject(projectName);
          }); 
 commander.command('build <platform>').action(buildApp);                          
 commander.parse(process.argv);
@@ -32,6 +33,24 @@ function buildApp(platform){
         default:
             break;
     }
+}
+
+function initProject(projectName){
+    childProcess.exec(
+        'npm init -y', 
+        {cwd: "./"+projectName}, 
+        function(error, stdout, stderr) {
+            if (error !== null) {
+                console.error('exec error: ' + error);
+                console.error('exec error: ' + path.join("./", projectName));
+                console.error(stdout);
+                notify(project + ': project init Failed: ' + JSON.stringify(error));
+                process.exit(1);
+            } else {
+                notify(project + ': project init Success');
+            }
+        }
+    );
 }
 
 function buildWEBApp(){

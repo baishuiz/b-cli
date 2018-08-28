@@ -33,7 +33,10 @@ function requestConfig(grunt, url, done) {
 module.exports = function(grunt) {
 
     grunt.registerTask('getCommonModuleConfig', 'replace common module from product static-resource folder', function() {
-        var commonModulePath = grunt.config('packPkg').custom.commonModulePath + '?' + new Date().getTime();
+        // var commonModulePath = grunt.config('config').custom.commonModulePath + '?' + new Date().getTime();
+        var path = grunt.config('config').commonModulePath;
+        if(!path){return;}
+        var commonModulePath = path + '?' + new Date().getTime();
         var done = this.async();
 
         requestConfig(grunt, commonModulePath, done);

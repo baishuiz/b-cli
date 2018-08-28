@@ -4,6 +4,9 @@ var grunt;
 function getFile(isHybrid){
   var URL    = "./dest/index.html";
 
+  if(!grunt.file.exists(URL)){
+    return ;
+  }
   var activeFile = grunt.file.read(URL);
     
   if (isHybrid) {

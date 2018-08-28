@@ -83,12 +83,17 @@ module.exports = function(grunt) {
         return grunt.file.exists(configPath) ? grunt.file.readJSON(configPath) : {};
     }
 
+    function getfile(filePath){
+        return grunt.file.exists(filePath) ? grunt.file.read(filePath) : {};
+    }
+
     grunt.initConfig({
         packPkg: packPkg, // 打包模块的 pkg
         pkg: grunt.file.readJSON('../package.json'), // 项目的 pkg
-        router: grunt.file.read('src/router.json'),
-        service: grunt.file.read('src/service.json'),
+        router: getfile('src/router.json'),
+        service: getfile('src/service.json'),
         hybridConfig: getProjectConfig('../config.hybrid.json'),
+        config: getProjectConfig('../config.json'),
         output: {
             fileName: '<%= pkg.name %>.<%= pkg.version %>.js',
             minFileName: '<%= pkg.name %>.<%= pkg.version %>.js'
