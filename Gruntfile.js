@@ -3,6 +3,7 @@ var path = require('path');
 
 module.exports = function(grunt) {
 
+    grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-filerev');
@@ -99,6 +100,20 @@ module.exports = function(grunt) {
             minFileName: '<%= pkg.name %>.<%= pkg.version %>.js'
         },
 
+        ts: {
+            // options: 
+            // {
+            //     comments: false,               // 删除注释
+            //     target: 'es5',                 // es5,默认为es3
+            //     module: 'commonjs',            // 居然默认是amd?
+            //     declaration: true,             // 生成.d.ts
+            // },
+            build : {
+                src : ['dest/**/*.ts'],
+                tsconfig : "./tsconfig.json"
+            }
+          },
+
         filerev: {
             html: {
                 options: filerevConfigOptions,
@@ -189,19 +204,19 @@ module.exports = function(grunt) {
                 }, {
                     expand: true,
                     cwd: 'src/pages/',
-                    src: "*.js",
+                    src: ["*.js", "*.ts"],
                     dest: 'dest/pages',
                     filter: 'isFile'
                 }, {
                     expand: true,
                     cwd: 'src/pages/partials/',
-                    src: "*.js",
+                    src: ["*.js", "*.ts"],
                     dest: 'dest/pages/partials',
                     filter: 'isFile'
                 }, {
                     expand: true,
                     cwd: 'src/service/',
-                    src: "*.js",
+                    src: ["*.js", "*.ts"],
                     dest: 'dest/service',
                     filter: 'isFile'
                 }, {
@@ -352,6 +367,13 @@ module.exports = function(grunt) {
                     ],
                     dest: './dest/pages/' + dir + '.js'
                 };
+
+                concat[dir] = {
+                    src: [
+                        './src/pages/' + dir + '/*.ts'
+                    ],
+                    dest: './dest/pages/' + dir + '.ts'
+                };                
 
                 // save the new concat configuration
                 grunt.config.set('concat', concat);
@@ -692,8 +714,9 @@ module.exports = function(grunt) {
     //     A requerequire B，当B改变，A不变时，B的sign变了
     //     但是由于先进行了filerev:js，导致A的sign没变
     var buildWebTask = [
+        'concatController', 'ts',
         'uglify', 'filerev:js',
-        'concatController',
+        
         'includePartial', 'concatTemplate', 'concatStyle',
         'replaceModule', 'includController',
         'filerev:img', 'replaceImage',
