@@ -29,7 +29,7 @@
     "url": "git@github.com:baishuiz/b-cli.git"
   },
   "bin": {
-    "cpack": "./pack.js"
+    "b": "./pack.js"
   },
   "devDependencies": {}
 }
