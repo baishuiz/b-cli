@@ -7,7 +7,7 @@
 ## Installing the CLI
 ```
 npm install -g grunt-cli  # if no grunt
-npm install -g @baishuiz/b-cli
+npm install -g @baishuiz/b-cli --unsafe-perm
 ```
 This will put the <code>b</code> command in your system path, allowing it to be run from directory.
 
