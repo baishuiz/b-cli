@@ -1,6 +1,6 @@
 {
   "name": "@baishuiz/b-cli",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "b-cli",
   "main": "pack.js",
   "author": "baishuiz@gmail.com",
