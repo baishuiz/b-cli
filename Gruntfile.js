@@ -2,7 +2,6 @@ var jsonminify = require('jsonminify');
 var path = require('path');
 
 module.exports = function(grunt) {
-
     grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -50,6 +49,9 @@ module.exports = function(grunt) {
         }
         grunt.file.setBase(basePath);
     }
+
+
+   
 
     
     var replacedSummary = function() {
@@ -101,16 +103,16 @@ module.exports = function(grunt) {
         },
 
         ts: {
-            // options: 
-            // {
-            //     comments: false,               // 删除注释
-            //     target: 'es5',                 // es5,默认为es3
-            //     module: 'commonjs',            // 居然默认是amd?
-            //     declaration: true,             // 生成.d.ts
-            // },
+            options: 
+            {
+                
+                target: 'es5',            
+                module: 'es6',            
+                declaration: true,             // 生成.d.ts
+            },
             build : {
-                src : ['dest/**/*.ts'],
-                tsconfig : "./tsconfig.json"
+                src : ['dest/**/*.ts']
+                // tsconfig : "./tsconfig.json"
             }
           },
 
@@ -164,7 +166,7 @@ module.exports = function(grunt) {
                 }, {
                     expand: true,
                     cwd: 'src/',
-                    src: ["*.html", "*.txt"],
+                    src: ["*.html", "*.txt", "*.d.ts"],
                     dest: 'dest'
                 }, {
                     expand: true,
@@ -368,12 +370,32 @@ module.exports = function(grunt) {
                     dest: './dest/pages/' + dir + '.js'
                 };
 
+                // concat[dir] = {
+                //     src: [
+                //         // './src/pages/' + dir + '/*.ts',
+                //         // './src/pages/' + dir + '/*.ts',
+                        
+                //         './src/pages/' + dir +'/!(' + dir + ').ts',
+                //         './src/pages/' + dir +'/' + dir + '.ts',
+                        
+                //     ],
+                //     dest: './dest/pages/' + dir + '.ts'
+                // };         
+                let Page = require('./Page'); 
+                // let pagePath = './src/pages/' + dir + '/';
+                let pagePath = './src/';
+                let fileName = dir ;
+                let extName = 'ts';
+                let activePage = new Page(pagePath, fileName, extName);
+                let src = activePage.getModuleCallChain();
+                console.log(src)
+                // grunt.log.msg.write(src);
+                
+
                 concat[dir] = {
-                    src: [
-                        './src/pages/' + dir + '/*.ts'
-                    ],
+                    src: src.concat('./src/pages/' + dir +'/' + dir + '.ts'),
                     dest: './dest/pages/' + dir + '.ts'
-                };                
+                }; 
 
                 // save the new concat configuration
                 grunt.config.set('concat', concat);
