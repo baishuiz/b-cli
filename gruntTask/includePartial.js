@@ -2,6 +2,7 @@ var TAG = /<#include\s+(['"])([^'"]+)\1>/ig;
 var grunt;
 var revExtend = '_';
 var replacedSummary = function() {
+  
     var summaryOrigin = grunt.filerev && grunt.filerev.summary || {};
     var summary = {};
     for (var key in summaryOrigin) {
@@ -16,9 +17,11 @@ function dest(sourceContent, destPath){
 
 function eachPageView(){
   var FILTER = {filter: "isFile"};
-  var URL    = "./dest/template/*.html";
+  // var URL    = "./dest/template/*.html";
+  var URL    = "./src/template/**/*.html";
   grunt.file.expand(FILTER, URL).forEach(function(dir) {
     // console.log(dir)
+    
       var replacedContents = concatView(dir);
       buildPageView(dir, replacedContents);
   });
@@ -30,6 +33,7 @@ function concatView(dir){
       var activeFile = grunt.file.read(dir);
       var parentViewName = dir.match(/\/([\w-]*).html$/);
       parentViewName = parentViewName && parentViewName[1] || '';
+      
       var replacedContent = activeFile.replace(TAG, function(includeTag, $1, path){
           var partialContent = grunt.file.read(CWD + path);
           if (parentViewName) {
@@ -45,7 +49,6 @@ function concatView(dir){
 }
 
 function includeController(content, path) {
-
   //a.match(/([^\\]+)\..+$/)
   // var map  = {};
   var router = grunt.config("router");
@@ -59,7 +62,7 @@ function includeController(content, path) {
       var view = key.match(/([^\/]+)\..+$/)[1]
       var hash = summary[key].match(/([^\/._]+)\.[^.]+$/)[1];
       // map[view] = hash;
-
+      
       grunt.file.defaultEncoding = 'utf8';
       if (key.indexOf(jsFilePath) !== -1) {
         var filePath = jsFilePath + revExtend + hash + ".js";

@@ -193,17 +193,20 @@ module.exports = function(grunt) {
                     filter: 'isFile'
                 }, {
                     expand: true,
-                    cwd: 'src/webresource/css/',
-                    src: "*.css",
-                    dest: 'dest/webresource/css',
-                    filter: 'isFile'
-                }, {
+                    cwd: 'src/webresource/',
+                    src: "**/*",
+                    dest: 'dest/webresource/'
+                    
+                },
+                 {
                     expand: true,
                     cwd: 'src/webresource/image/',
                     src: "**/*",
                     dest: 'dest/webresource/image',
                     filter: 'isFile'
-                }, {
+                }, 
+                
+                {
                     expand: true,
                     cwd: 'src/pages/',
                     src: ["*.js", "*.ts"],
@@ -589,11 +592,12 @@ module.exports = function(grunt) {
         var replaceStyleTage = function(dir) {
             if (grunt.file.exists(dir)) {
                 var fileContent = grunt.file.read(dir);
-                var matched = fileContent.match(/(<link[^>]+=["'])(\S+.css)(["'][^>]*>)/g);
+                var matched = fileContent.match(/(<link[^>]+=["'])(\S+\.css)(["'][^>]*>)/g);
                 matched && matched.forEach(function(styleTag) {
-                    var path = styleTag.match(/(<link[^>]+=["'])(\S+.css)(["'][^>]*>)/);
+                    var path = styleTag.match(/(<link[^>]+=["'])(\S+\.css)(["'][^>]*>)/);
                     if (path && path[2]) {
                         var stylePath = path && path[2] || '';
+                        console.log(stylePath, "*****************")
                         var cssName = stylePath.match(/\/([^\/]+).css$/)[1] || '';
 
                         if (cssName) {

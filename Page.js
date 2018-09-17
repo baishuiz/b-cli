@@ -65,7 +65,6 @@ function Page(pagePath, pageName, extName){
     function getModules(fileURI){
         let moduleStack = new Set();
         // let content = grunt.file.read(fileURI);
-        console.log(fileURI,"************")
         let content = fs.readFileSync(fileURI, {encoding:'utf8'})
          content.replace(/require\((['"]\s*([^'"]+)\s*['"])\)/ig, function(matchStr, moduleStr, moduleName){
             moduleStack.add(moduleName);
