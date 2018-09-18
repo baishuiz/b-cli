@@ -68,10 +68,11 @@ function build(task, project){
                 console.error('exec error: ' + error);
                 console.error('exec error: ' + stderr);
                 console.error(stdout);
-                notify(project + ': Pack Failed: ' + JSON.stringify(error));
+                // notify(project + ': Pack Failed: ' + JSON.stringify(error));
                 process.exit(1);
             } else {
                 notify(project + ': Pack Success');
+                console.info(project + ': Pack Success');
             }
         }
     );

@@ -17,8 +17,8 @@ function dest(sourceContent, destPath){
 
 function eachPageView(){
   var FILTER = {filter: "isFile"};
-  // var URL    = "./dest/template/*.html";
-  var URL    = "./src/template/**/*.html";
+  var URL    = "./dest/template/*.html";
+  // var URL    = "./src/template/**/*.html";
   grunt.file.expand(FILTER, URL).forEach(function(dir) {
     // console.log(dir)
     

@@ -22,9 +22,12 @@ function Page(pagePath, pageName, extName){
             if (element.count === 0) {
                 let path = key.replace(/\./g, '/');
                 let fileURI = pagePath + path + '.' + extName;  
-                pageModuleChain.unshift(fileURI);
-                subtracter(element);
-                topology.delete(key);
+                if(fs.existsSync(fileURI)){
+                    pageModuleChain.unshift(fileURI);
+                    subtracter(element);
+                    topology.delete(key);
+                }
+
             }
         }
         if(topology.size > 0){
